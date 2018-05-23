@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import com.seirion.worlddodook.data.PriceInfo
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -44,8 +45,8 @@ class MainActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     val date = GregorianCalendar()
-                    hour.text = date.get(Calendar.HOUR).toString()
-                    min.text = date.get(Calendar.MINUTE).toString()
+                    hour.text = String.format(Locale.US, "%02d", date.get(Calendar.HOUR))
+                    min.text = String.format(Locale.US, "%02d", date.get(Calendar.MINUTE))
                     price.text = it.toString()
                 }, { Log.e(TAG, "error : $it") })
         super.onStart()
@@ -60,7 +61,12 @@ class MainActivity : AppCompatActivity() {
         val response = client.newCall(request).execute()
         val jsonString = response.body()?.string()
         Log.d(TAG, "log : $jsonString")
+        val priceInfo = getPriceInfoOf(jsonString)
         return 0
+    }
+
+    private fun getPriceInfoOf(jsonString: String?): Any {
+        return PriceInfo("", "", 0, 0, 0, 0,0)
     }
 
     override fun onStop() {
