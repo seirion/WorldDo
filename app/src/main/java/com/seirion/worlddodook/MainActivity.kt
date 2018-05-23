@@ -8,8 +8,14 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import okhttp3.Request
 import java.util.*
 import java.util.concurrent.TimeUnit
+import okhttp3.OkHttpClient
+
+
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,6 +52,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getPriceInfo(): Int {
+        val client = OkHttpClient()
+        val code = "043710"
+        val request = Request.Builder()
+                .url(BASE_URL + code)
+                .build()
+        val response = client.newCall(request).execute()
+        val jsonString = response.body()?.string()
+        Log.d(TAG, "log : $jsonString")
         return 0
     }
 
@@ -57,5 +71,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "Log"
+        private const val BASE_URL = "http://polling.finance.naver.com/api/realtime.nhn?query=SERVICE_ITEM:"
     }
 }
