@@ -13,9 +13,9 @@ import okhttp3.Request
 import java.util.*
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
-
-
-
+import org.json.JSONArray
+import org.json.JSONObject
+import java.text.ParseException
 
 
 class MainActivity : AppCompatActivity() {
@@ -37,11 +37,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         disposable = Observable.interval(30, TimeUnit.SECONDS).startWith(0)
-                .flatMap {
-                    Observable.just(getPriceInfo())
-                }
+                .map { getPriceInfo() }
                 .subscribeOn(Schedulers.io())
-                .retry()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     val date = GregorianCalendar()
@@ -62,10 +59,29 @@ class MainActivity : AppCompatActivity() {
         val jsonString = response.body()?.string()
         Log.d(TAG, "log : $jsonString")
         val priceInfo = getPriceInfoOf(jsonString)
-        return 0
+        return priceInfo.current
     }
 
-    private fun getPriceInfoOf(jsonString: String?): Any {
+    private fun getPriceInfoOf(jsonString: String?): PriceInfo {
+        try {
+            val jsonObject = JSONObject(jsonString)
+            val resultCode = jsonObject.get("resultCode")
+            if (resultCode == "success") {
+                val values = jsonObject.getJSONObject("result").getJSONArray("areas")
+                for (i in 0 until values.length()) {
+                    val data = values.getJSONObject(i).getJSONArray("datas")
+                    for (j in 0 until data.length()) {
+                        val cd = data.getJSONObject(i).getString("cd")
+                        if (cd == "043710") {
+                            val current = Integer.parseInt(data.getJSONObject(i).getString("nv"))
+                            return PriceInfo("", "", current, 0, 0, 0, 0)
+                        }
+                    }
+                }
+            }
+        } catch (e: ParseException) {
+            Log.e(TAG, ": $e")
+        }
         return PriceInfo("", "", 0, 0, 0, 0,0)
     }
 
