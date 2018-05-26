@@ -5,9 +5,9 @@ import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test
 
-@Ignore("attempt to access external api")
 class NaverApiTest {
 
+    @Ignore("attempt to access external api")
     @Test
     fun queryStockCodesShouldReturnMatchedStockCodes() {
         val codes = queryStockCodes("서울리거")
@@ -16,6 +16,7 @@ class NaverApiTest {
         ), codes)
     }
 
+    @Ignore("attempt to access external api")
     @Test
     fun queryStockCodesShouldReturnMultipleItemsListIfThereAreMultipleMatches() {
         val codes = queryStockCodes("한국전력")
@@ -25,6 +26,7 @@ class NaverApiTest {
         ), codes)
     }
 
+    @Ignore("attempt to access external api")
     @Test
     fun queryStockCodesShouldReturnEmptyListForUnknownStockName() {
         val codes = queryStockCodes("ㅇㅇ없어")
