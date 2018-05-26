@@ -15,7 +15,7 @@ import okhttp3.Request
 import java.net.URLEncoder
 
 private const val STOCK_CODE_QUERY_URL = "http://ac.finance.naver.com:11002/ac?q=%s&q_enc=utf-8&st=111&frm=stock&r_format=json&r_enc=utf-8&r_unicode=1&t_koreng=1&r_lt=111"
-private const val PRICE_INFO_QUERY_URL = "http://polling.finance.naver.com/api/realtime.nhn?query=SERVICE_ITEM:"
+private const val PRICE_INFO_QUERY_URL = "http://polling.finance.naver.com/api/realtime.nhn?query=SERVICE_ITEM:%s"
 private const val TAG = "Log"
 
 private val moshi: Moshi = Moshi.Builder().build()
@@ -25,7 +25,7 @@ private val stockCodeQueryResponseAdapter = StockCodeQueryResponse.jsonAdapter(m
 fun getPriceInfo(code: String): Int {
     val client = OkHttpClient()
     val request = Request.Builder()
-            .url(PRICE_INFO_QUERY_URL + code)
+            .url(PRICE_INFO_QUERY_URL.format(code))
             .build()
     val response = client.newCall(request).execute()
     val jsonString = response.body()?.string()
@@ -49,7 +49,7 @@ fun queryStockCodes(name: String): List<StockCode> {
     val encodedName = URLEncoder.encode(name, "UTF-8")
     val client = OkHttpClient()
     val request = Request.Builder()
-            .url(String.format(STOCK_CODE_QUERY_URL, encodedName))
+            .url(STOCK_CODE_QUERY_URL.format(encodedName))
             .build()
     val response = client.newCall(request).execute()
     val jsonString = response.body()?.string() ?: return listOf()
