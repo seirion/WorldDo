@@ -6,7 +6,7 @@ import org.junit.Ignore
 import org.junit.Test
 
 @Ignore("attempt to access external api")
-class NaverAPITest {
+class NaverApiTest {
 
     @Test
     fun queryStockCodesShouldReturnMatchedStockCodes() {
