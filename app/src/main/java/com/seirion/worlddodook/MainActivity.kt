@@ -1,5 +1,6 @@
 package com.seirion.worlddodook
 
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -16,7 +17,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var min: TextView
     private lateinit var price: TextView
 
-    private var code: String? = null
+    private lateinit var code: String
     private lateinit var card: Card
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,8 +29,8 @@ class MainActivity : AppCompatActivity() {
         min = findViewById(R.id.min)
         price = findViewById(R.id.price)
 
-        code = "043710" // default ㅅㅇㄹㄱ
-        card = Card(code!!, price, hour, min)
+        code = initialCode()
+        card = Card(code, price, hour, min)
 
         findViewById<View>(R.id.root).setOnLongClickListener {
             open()
@@ -47,15 +48,28 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
     }
 
+    private fun initialCode(): String {
+        val prefs = getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE)
+        return prefs.getString(PREFS_DEFAULT_KEY_CODE, "043710") // default ㅅㅇㄹㄱ
+    }
+
     private fun open() {
         val v = layoutInflater.inflate(R.layout.input_dialog, null)
         val builder = AlertDialog.Builder(this)
         builder.setView(v)
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     code = v.findViewById<EditText>(R.id.input).text.toString()
-                    card.resume(code!!)
+                    card.resume(code)
+                    getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE).edit()
+                            .putString(PREFS_DEFAULT_KEY_CODE, code)
+                            .apply()
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()
+    }
+
+    companion object {
+        private const val DEFAULT_PREFS = "DEFAULT_PREFS"
+        private const val PREFS_DEFAULT_KEY_CODE = "PREFS_DEFAULT_KEY_CODE"
     }
 }
