@@ -2,7 +2,6 @@ package com.seirion.worlddodook.data
 
 import android.util.Log
 import android.widget.TextView
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.Moshi
 import io.reactivex.Observable
@@ -17,8 +16,10 @@ import java.util.GregorianCalendar
 import java.util.Locale
 
 
+
+
 val moshi: Moshi = Moshi.Builder().build()
-val adapter: JsonAdapter<NaverRealTimeResponse> = NaverRealTimeResponse.jsonAdapter(moshi)
+val adapter = NaverRealTimeResponse.jsonAdapter(moshi)
 
 class Card(val code: String, val price: TextView, val hour: TextView, val min: TextView) {
 
