@@ -20,7 +20,7 @@ import java.util.Locale
 val moshi: Moshi = Moshi.Builder().build()
 val adapter: JsonAdapter<NaverRealTimeResponse> = NaverRealTimeResponse.jsonAdapter(moshi)
 
-class Card(val code: String, val price: TextView, val hour: TextView, val min: TextView) {
+class Card(var code: String, val price: TextView, val hour: TextView, val min: TextView) {
 
     private var disposable: Disposable? = null
 
@@ -31,6 +31,12 @@ class Card(val code: String, val price: TextView, val hour: TextView, val min: T
     fun dispose() {
         disposable?.dispose()
         disposable = null
+    }
+
+    fun resume(code: String) {
+        this.code = code
+        dispose()
+        start()
     }
 
     private fun trigger() {
