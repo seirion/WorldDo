@@ -16,8 +16,6 @@ import java.util.GregorianCalendar
 import java.util.Locale
 
 
-
-
 val moshi: Moshi = Moshi.Builder().build()
 val adapter = NaverRealTimeResponse.jsonAdapter(moshi)
 
