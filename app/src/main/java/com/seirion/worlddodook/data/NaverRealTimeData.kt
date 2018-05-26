@@ -35,3 +35,11 @@ data class NaverRealTimeData(
 )
 
 val DUMMY_DATA = NaverRealTimeData("", "",0, 0, 0, 0)
+
+@JsonClass(generateAdapter = true)
+data class StockCodeQueryResponse(
+        val query: List<String>,
+        val items: List<List<List<List<String>>>>
+) {
+    companion object
+}
