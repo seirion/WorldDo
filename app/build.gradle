@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -29,7 +31,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     testImplementation 'junit:junit:4.12'
@@ -40,4 +42,32 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.10'
 
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.moshi:moshi:1.6.0'
+    kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.6.0'
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+    mapDiagnosticLocations = true
+    arguments {
+        arg("moshi.generated", "javax.annotation.Generated")
+    }
+}
+
+if (project.plugins.hasPlugin("kotlin")
+        || project.plugins.hasPlugin("org.jetbrains.kotlin.kapt")
+        || project.plugins.hasPlugin("org.jetbrains.kotlin.android")
+        || project.plugins.hasPlugin("org.jetbrains.kotlin.jvm")
+        || project.plugins.hasPlugin("kotlin-android")
+        || project.plugins.hasPlugin("kotlin-kapt")) {
+    if (project.plugins.hasPlugin("com.android.application") || project.plugins.hasPlugin("com.android.library")) {
+        project.android.sourceSets {
+            // For kotlin code gen during kapt
+            main.java.srcDirs += [file("$buildDir/generated/source/kaptKotlin/main")]
+            debug.java.srcDirs += [file("$buildDir/generated/source/kaptKotlin/debug")]
+            release.java.srcDirs += [file("$buildDir/generated/source/kaptKotlin/release")]
+            test.java.srcDirs += [file("$buildDir/generated/source/kaptKotlin/test")]
+        }
+    }
 }

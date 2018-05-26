@@ -2,18 +2,23 @@ package com.seirion.worlddodook.data
 
 import android.util.Log
 import android.widget.TextView
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonEncodingException
+import com.squareup.moshi.Moshi
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.json.JSONObject
-import java.text.ParseException
 import java.util.concurrent.TimeUnit
 import java.util.Calendar
 import java.util.GregorianCalendar
 import java.util.Locale
+
+
+val moshi: Moshi = Moshi.Builder().build()
+val adapter: JsonAdapter<NaverRealTimeResponse> = NaverRealTimeResponse.jsonAdapter(moshi)
 
 class Card(val code: String, val price: TextView, val hour: TextView, val min: TextView) {
 
@@ -51,31 +56,19 @@ class Card(val code: String, val price: TextView, val hour: TextView, val min: T
         val response = client.newCall(request).execute()
         val jsonString = response.body()?.string()
         Log.d(TAG, "log : $jsonString")
-        val priceInfo = getPriceInfoOf(jsonString)
+        val priceInfo = getPriceInfoOf(jsonString ?: "")
         return priceInfo.current
     }
 
-    private fun getPriceInfoOf(jsonString: String?): PriceInfo {
+    private fun getPriceInfoOf(jsonString: String): PriceInfo {
+        var data: NaverRealTimeData = DUMMY_DATA
         try {
-            val jsonObject = JSONObject(jsonString)
-            val resultCode = jsonObject.get("resultCode")
-            if (resultCode == "success") {
-                val values = jsonObject.getJSONObject("result").getJSONArray("areas")
-                for (i in 0 until values.length()) {
-                    val data = values.getJSONObject(i).getJSONArray("datas")
-                    for (j in 0 until data.length()) {
-                        val cd = data.getJSONObject(i).getString("cd")
-                        if (cd == code) {
-                            val current = Integer.parseInt(data.getJSONObject(i).getString("nv"))
-                            return PriceInfo("", "", current, 0, 0, 0, 0)
-                        }
-                    }
-                }
-            }
-        } catch (e: ParseException) {
-            Log.e(TAG, ": $e")
+            val response = adapter.fromJson(jsonString)
+            data = response?.result!!.areas[0].datas[0]
+        } catch (e: JsonEncodingException) {
+            Log.e(TAG, "Fail to parse json: $e", e)
         }
-        return PriceInfo("", "", 0, 0, 0, 0, 0)
+        return PriceInfo(data.code, data.name, data.low, data.high, data.open, data.current)
     }
 
     companion object {
