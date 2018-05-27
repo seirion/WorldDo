@@ -15,6 +15,7 @@ import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.customView
 import org.jetbrains.anko.editText
 import org.jetbrains.anko.selector
+import org.jetbrains.anko.singleLine
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.yesButton
 
@@ -63,10 +64,13 @@ class MainActivity : AppCompatActivity() {
 
     @Suppress("EXPERIMENTAL_FEATURE_WARNING")
     private fun open() = async(UI) {
-        alert("Input:") {
+        alert {
             lateinit var stockNameEditText: EditText
             customView {
-                stockNameEditText = editText {}
+                stockNameEditText = editText {
+                    singleLine = true
+                    hint = "종목이름"
+                }
             }
             yesButton {
                 chooseStock(stockNameEditText.text.toString())
@@ -79,16 +83,18 @@ class MainActivity : AppCompatActivity() {
         val deferred = bg { queryStockCodes(name) }
         val queryStockCodes = deferred.await()
         val stockNames = queryStockCodes.map { it.name }
-        if (stockNames.isEmpty())
+        if (stockNames.isEmpty()) {
             toast("ㅇㅇ 없어")
-        else
-            selector("종목선택", stockNames, { _, i ->
+            open()
+        } else {
+            selector(null, stockNames) { _, i ->
                 code = queryStockCodes[i].code
                 card.resume(code)
                 getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE).edit()
                         .putString(PREFS_DEFAULT_KEY_CODE, code)
                         .apply()
-            })
+            }
+        }
     }
 
     companion object {
