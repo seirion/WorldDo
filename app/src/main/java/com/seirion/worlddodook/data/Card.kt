@@ -20,7 +20,7 @@ class Card(var code: String, val price: TextView, val hour: TextView, val min: T
 
     fun start() {
         disposable = Observable.interval(30, TimeUnit.SECONDS).startWith(0)
-                .map { getPriceInfo(listOf(code))[0].current }
+                .map { getPriceInfo(listOf(code)) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ updateUi(it) }, { Log.e(TAG, "error : $it", it) })
@@ -37,11 +37,13 @@ class Card(var code: String, val price: TextView, val hour: TextView, val min: T
         start()
     }
 
-    private fun updateUi(value: Int) {
+    private fun updateUi(prices: List<PriceInfo>) {
         val date = GregorianCalendar()
         hour.text = String.format(Locale.US, "%02d", date.get(Calendar.HOUR))
         min.text = String.format(Locale.US, "%02d", date.get(Calendar.MINUTE))
-        price.text = value.toString()
+        if (!prices.isEmpty()) {
+            price.text = prices[0].current.toString()
+        }
     }
 
     companion object {
