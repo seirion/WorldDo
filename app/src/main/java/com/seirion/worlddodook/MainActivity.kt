@@ -1,14 +1,18 @@
 package com.seirion.worlddodook
 
 import android.content.Context
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
 import com.seirion.worlddodook.data.Card
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import org.jetbrains.anko.coroutines.experimental.bg
+import org.jetbrains.anko.selector
 
 
 class MainActivity : AppCompatActivity() {
@@ -58,11 +62,19 @@ class MainActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setView(v)
                 .setPositiveButton(android.R.string.ok) { _, _ ->
-                    code = v.findViewById<EditText>(R.id.input).text.toString()
-                    card.resume(code)
-                    getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE).edit()
-                            .putString(PREFS_DEFAULT_KEY_CODE, code)
-                            .apply()
+                    async(UI) {
+                        val name = v.findViewById<EditText>(R.id.input).text.toString()
+                        val deferred = bg { queryStockCodes(name) }
+                        val queryStockCodes = deferred.await()
+                        val stockNames = queryStockCodes.map { it.name }
+                        selector("종목선택", stockNames, { dialog, i ->
+                            code = queryStockCodes[i].code
+                            card.resume(code)
+                            getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE).edit()
+                                    .putString(PREFS_DEFAULT_KEY_CODE, code)
+                                    .apply()
+                        })
+                    }
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()
