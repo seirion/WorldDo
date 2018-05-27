@@ -36,8 +36,6 @@ data class NaverRealTimeData(
         @Json(name="nv") val current: Int
 )
 
-val DUMMY_DATA = NaverRealTimeData("", "",0, 0, 0, 0)
-
 data class StockCodeQueryData(
         val code: String,
         val name: String,
