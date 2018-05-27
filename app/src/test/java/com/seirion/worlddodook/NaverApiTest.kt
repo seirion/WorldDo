@@ -32,4 +32,11 @@ class NaverApiTest {
         val codes = queryStockCodes("ㅇㅇ없어")
         Assert.assertEquals(listOf<StockCode>(), codes)
     }
+
+    @Test
+    fun getPriceInfoShouldReturnMultipleItemList() {
+        val priceInfoList = getPriceInfo(listOf("015760", "005930"))
+        Assert.assertEquals(listOf("015760", "005930"), priceInfoList.map { it.code })
+        Assert.assertEquals(listOf("한국전력", "삼성전자"), priceInfoList.map { it.name })
+    }
 }
