@@ -20,6 +20,7 @@ class Card(var code: String, val price: TextView, val hour: TextView, val min: T
 
     fun start() {
         disposable = Observable.interval(30, TimeUnit.SECONDS).startWith(0)
+                // TODO: Query multiple stocks
                 .map { getPriceInfo(listOf(code)) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -42,6 +43,7 @@ class Card(var code: String, val price: TextView, val hour: TextView, val min: T
         hour.text = String.format(Locale.US, "%02d", date.get(Calendar.HOUR))
         min.text = String.format(Locale.US, "%02d", date.get(Calendar.MINUTE))
         if (!prices.isEmpty()) {
+            // TODO: Display all prices
             price.text = prices[0].current.toString()
         }
     }
