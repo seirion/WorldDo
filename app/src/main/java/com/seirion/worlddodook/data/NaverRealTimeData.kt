@@ -34,7 +34,9 @@ data class NaverRealTimeData(
         @Json(name="hv") val high: Int,
         @Json(name="lv") val low: Int,
         @Json(name="nv") val current: Int
-)
+) {
+    fun asPriceInfo() = PriceInfo(code, name, low, high, open, current)
+}
 
 data class StockCodeQueryData(
         val code: String,
