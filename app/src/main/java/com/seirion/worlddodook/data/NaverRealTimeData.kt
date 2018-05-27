@@ -26,15 +26,41 @@ data class NaverRealTimeResponseArea(
         val name: String
 )
 
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 @JsonClass(generateAdapter = true)
 data class NaverRealTimeData(
-        @Json(name="cd") val code: String,
-        @Json(name="nm") val name: String,
-        @Json(name="ov") val open: Int,
-        @Json(name="hv") val high: Int,
-        @Json(name="lv") val low: Int,
-        @Json(name="nv") val current: Int
-)
+        @Json(name="cd") val code: String,                 // 종목코드
+        @Json(name="nm") val name: String,                 // 종목명
+        @Json(name="ov") val open: Int,                    // 시가
+        @Json(name="hv") val high: Int,                    // 고가
+        @Json(name="lv") val low: Int,                     // 저가
+        @Json(name="nv") val current: Int,                 // 종가
+        @Json(name="aq") val quantity: Long,               // 거래량
+        @Json(name="aa") val amount: Long,                 // 거래대금
+        @Json(name="sv") val yesterdayClose: Int,          // 전일 종가
+        @Json(name="cv") val changeValue: Int,             // 전일대비 가격 차이
+        @Json(name="cr") val changeRate: Float,            // 전일대비 가격 증감 %
+        @Json(name="ul") val upperLimit: Int,              // 상한가
+        @Json(name="ll") val lowerLimit: Int,              // 하한가
+        @Json(name="rf") val changeType: Int,              // 전일대비
+        @Json(name="ms") val marketState: String           // 시장 상태
+) {
+    val changeTypeExplanation
+        get() = when (changeType) {
+            1 -> "상한가"
+            2 -> "상승"
+            4 -> "하한가"
+            5 -> "하락"
+            else -> "보합"
+        }
+
+    val markStateExplanation
+        get() = when (marketState) {
+            "PREOPEN" -> "개장전"
+            "CLOSE" -> "장마감"
+            else -> "장중"
+        }
+}
 
 data class StockCodeQueryData(
         val code: String,
