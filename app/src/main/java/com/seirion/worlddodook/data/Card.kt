@@ -19,7 +19,11 @@ class Card(var code: String, val price: TextView, val hour: TextView, val min: T
     private var disposable: Disposable? = null
 
     fun start() {
-        trigger()
+        disposable = Observable.interval(30, TimeUnit.SECONDS).startWith(0)
+                .map { getPriceInfo(code) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ updateUi(it) }, { Log.e(TAG, "error : $it", it) })
     }
 
     fun dispose() {
@@ -33,14 +37,6 @@ class Card(var code: String, val price: TextView, val hour: TextView, val min: T
         start()
     }
 
-    private fun trigger() {
-        disposable = Observable.interval(30, TimeUnit.SECONDS).startWith(0)
-                .map { getPriceInfo(code) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ updateUi(it) }, { Log.e(TAG, "error : $it", it) })
-    }
-
     private fun updateUi(value: Int) {
         val date = GregorianCalendar()
         hour.text = String.format(Locale.US, "%02d", date.get(Calendar.HOUR))
@@ -49,6 +45,6 @@ class Card(var code: String, val price: TextView, val hour: TextView, val min: T
     }
 
     companion object {
-        private const val TAG = "Log"
+        private const val TAG = "Card"
     }
 }
