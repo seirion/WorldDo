@@ -69,24 +69,26 @@ class MainActivity : AppCompatActivity() {
                 stockNameEditText = editText {}
             }
             yesButton {
-                async(UI) {
-                    val name = stockNameEditText.text.toString()
-                    val deferred = bg { queryStockCodes(name) }
-                    val queryStockCodes = deferred.await()
-                    val stockNames = queryStockCodes.map { it.name }
-                    if (stockNames.isEmpty())
-                        toast("ㅇㅇ 없어")
-                    else
-                        selector("종목선택", stockNames, { _, i ->
-                            code = queryStockCodes[i].code
-                            card.resume(code)
-                            getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE).edit()
-                                    .putString(PREFS_DEFAULT_KEY_CODE, code)
-                                    .apply()
-                        })
-                }
+                chooseStock(stockNameEditText.text.toString())
             }
         }.show()
+    }
+
+    @Suppress("EXPERIMENTAL_FEATURE_WARNING")
+    private fun chooseStock(name: String) = async(UI) {
+        val deferred = bg { queryStockCodes(name) }
+        val queryStockCodes = deferred.await()
+        val stockNames = queryStockCodes.map { it.name }
+        if (stockNames.isEmpty())
+            toast("ㅇㅇ 없어")
+        else
+            selector("종목선택", stockNames, { _, i ->
+                code = queryStockCodes[i].code
+                card.resume(code)
+                getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE).edit()
+                        .putString(PREFS_DEFAULT_KEY_CODE, code)
+                        .apply()
+            })
     }
 
     companion object {
