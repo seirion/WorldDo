@@ -6,6 +6,7 @@ import com.seirion.worlddodook.data.NaverRealTimeData
 import com.seirion.worlddodook.data.NaverRealTimeResponse
 import com.seirion.worlddodook.data.PriceInfo
 import com.seirion.worlddodook.data.StockCode
+import com.seirion.worlddodook.data.StockCodeQueryDataAdapter
 import com.seirion.worlddodook.data.StockCodeQueryResponse
 import com.seirion.worlddodook.data.jsonAdapter
 import com.squareup.moshi.JsonEncodingException
@@ -18,7 +19,7 @@ private const val STOCK_CODE_QUERY_URL = "http://ac.finance.naver.com:11002/ac?q
 private const val PRICE_INFO_QUERY_URL = "http://polling.finance.naver.com/api/realtime.nhn?query=SERVICE_ITEM:%s"
 private const val TAG = "Log"
 
-private val moshi: Moshi = Moshi.Builder().build()
+private val moshi: Moshi = Moshi.Builder().add(StockCodeQueryDataAdapter()).build()
 private val realtimeResponseAdapter = NaverRealTimeResponse.jsonAdapter(moshi)
 private val stockCodeQueryResponseAdapter = StockCodeQueryResponse.jsonAdapter(moshi)
 
@@ -56,6 +57,6 @@ fun queryStockCodes(name: String): List<StockCode> {
     Log.d(TAG, "log : $jsonString")
     val data = stockCodeQueryResponseAdapter.fromJson(jsonString) ?: return listOf()
     return data.items[0].map {
-        StockCode(code=it[0][0], name=it[1][0])
+        StockCode(code=it.code, name=it.name)
     }
 }

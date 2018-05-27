@@ -1,7 +1,9 @@
 package com.seirion.worlddodook.data
 
+import com.squareup.moshi.FromJson
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.squareup.moshi.ToJson
 
 @JsonClass(generateAdapter = true)
 data class NaverRealTimeResponse(
@@ -36,10 +38,40 @@ data class NaverRealTimeData(
 
 val DUMMY_DATA = NaverRealTimeData("", "",0, 0, 0, 0)
 
+data class StockCodeQueryData(
+        val code: String,
+        val name: String,
+        val market: String,
+        val path: String,
+        val code2: String
+)
+
+@Suppress("unused")
+class StockCodeQueryDataAdapter {
+    @FromJson fun fromJson(list: List<List<String>>): StockCodeQueryData {
+        return StockCodeQueryData(
+                code=list[0][0],
+                name=list[1][0],
+                market=list[2][0],
+                path=list[3][0],
+                code2=list[4][0]
+        )
+    }
+    @ToJson fun toJson(data: StockCodeQueryData): List<List<String>> {
+        return listOf(
+                listOf(data.code),
+                listOf(data.name),
+                listOf(data.market),
+                listOf(data.path),
+                listOf(data.code2)
+        )
+    }
+}
+
 @JsonClass(generateAdapter = true)
 data class StockCodeQueryResponse(
         val query: List<String>,
-        val items: List<List<List<List<String>>>>
+        val items: List<List<StockCodeQueryData>>
 ) {
     companion object
 }
