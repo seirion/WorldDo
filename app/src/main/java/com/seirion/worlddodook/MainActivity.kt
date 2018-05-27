@@ -2,7 +2,6 @@ package com.seirion.worlddodook
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.WindowManager
@@ -11,8 +10,13 @@ import android.widget.TextView
 import com.seirion.worlddodook.data.Card
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import org.jetbrains.anko.alert
 import org.jetbrains.anko.coroutines.experimental.bg
+import org.jetbrains.anko.customView
+import org.jetbrains.anko.editText
 import org.jetbrains.anko.selector
+import org.jetbrains.anko.toast
+import org.jetbrains.anko.yesButton
 
 
 class MainActivity : AppCompatActivity() {
@@ -57,27 +61,32 @@ class MainActivity : AppCompatActivity() {
         return prefs.getString(PREFS_DEFAULT_KEY_CODE, "043710") // default ㅅㅇㄹㄱ
     }
 
-    private fun open() {
-        val v = layoutInflater.inflate(R.layout.input_dialog, null)
-        val builder = AlertDialog.Builder(this)
-        builder.setView(v)
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                    async(UI) {
-                        val name = v.findViewById<EditText>(R.id.input).text.toString()
-                        val deferred = bg { queryStockCodes(name) }
-                        val queryStockCodes = deferred.await()
-                        val stockNames = queryStockCodes.map { it.name }
-                        selector("종목선택", stockNames, { dialog, i ->
+    @Suppress("EXPERIMENTAL_FEATURE_WARNING")
+    private fun open() = async(UI) {
+        alert("Input:") {
+            lateinit var stockNameEditText: EditText
+            customView {
+                stockNameEditText = editText {}
+            }
+            yesButton {
+                async(UI) {
+                    val name = stockNameEditText.text.toString()
+                    val deferred = bg { queryStockCodes(name) }
+                    val queryStockCodes = deferred.await()
+                    val stockNames = queryStockCodes.map { it.name }
+                    if (stockNames.isEmpty())
+                        toast("ㅇㅇ 없어")
+                    else
+                        selector("종목선택", stockNames, { _, i ->
                             code = queryStockCodes[i].code
                             card.resume(code)
                             getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE).edit()
                                     .putString(PREFS_DEFAULT_KEY_CODE, code)
                                     .apply()
                         })
-                    }
                 }
-                .setNegativeButton(android.R.string.cancel, null)
-                .show()
+            }
+        }.show()
     }
 
     companion object {
