@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         card = Card(code, price, hour, min)
 
         findViewById<View>(R.id.root).setOnLongClickListener {
-            open()
+            openInputDialog()
             return@setOnLongClickListener true
         }
     }
@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Suppress("EXPERIMENTAL_FEATURE_WARNING")
-    private fun open() = async(UI) {
+    private fun openInputDialog() = async(UI) {
         alert {
             lateinit var stockNameEditText: EditText
             customView {
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         val stockNames = queryStockCodes.map { it.name }
         if (stockNames.isEmpty()) {
             toast("ㅇㅇ 없어")
-            open()
+            openInputDialog()
         } else {
             selector(null, stockNames) { _, i ->
                 code = queryStockCodes[i].code
