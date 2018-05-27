@@ -33,6 +33,7 @@ class NaverApiTest {
         Assert.assertEquals(listOf<StockCode>(), codes)
     }
 
+    @Ignore("attempt to access external api")
     @Test
     fun getPriceInfoShouldReturnMultipleItemList() {
         val priceInfoList = getPriceInfo(listOf("015760", "005930"))
