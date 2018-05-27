@@ -37,7 +37,7 @@ fun getPriceInfo(codes: List<String>): List<PriceInfo> {
 private fun getPriceInfoOf(jsonString: String): List<PriceInfo> {
     try {
         val response = realtimeResponseAdapter.fromJson(jsonString)
-        return response?.result!!.areas[0].datas.map { it.asPriceInfo() }
+        return response?.result!!.areas[0].datas
     } catch (e: Exception) {
         when (e) {
             is IOException,
