@@ -1,13 +1,17 @@
 package com.seirion.worlddodook
 
-import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
-import com.seirion.worlddodook.data.Card
+import com.seirion.worlddodook.data.DataSource
+import com.seirion.worlddodook.data.PriceInfo
+import io.reactivex.android.schedulers.AndroidSchedulers
+import java.util.Calendar
+import java.util.GregorianCalendar
+import java.util.Locale
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.alert
@@ -26,9 +30,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var min: TextView
     private lateinit var price: TextView
 
-    private lateinit var code: String
-    private lateinit var card: Card
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -38,28 +39,30 @@ class MainActivity : AppCompatActivity() {
         min = findViewById(R.id.min)
         price = findViewById(R.id.price)
 
-        code = initialCode()
-        card = Card(code, price, hour, min)
-
         findViewById<View>(R.id.root).setOnLongClickListener {
             openInputDialog()
             return@setOnLongClickListener true
         }
+
+        DataSource.init(this)
+        DataSource.observeChanges()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({updateUi(it)})
     }
 
     override fun onStart() {
+        DataSource.start()
         super.onStart()
-        card.start()
     }
 
     override fun onStop() {
-        card.dispose()
+        DataSource.stop()
         super.onStop()
     }
 
-    private fun initialCode(): String {
-        val prefs = getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE)
-        return prefs.getString(PREFS_DEFAULT_KEY_CODE, "043710") // default ㅅㅇㄹㄱ
+    override fun onDestroy() {
+        DataSource.clear()
+        super.onDestroy()
     }
 
     @Suppress("EXPERIMENTAL_FEATURE_WARNING")
@@ -78,6 +81,17 @@ class MainActivity : AppCompatActivity() {
         }.show()
     }
 
+    private fun updateUi(prices: List<PriceInfo>) {
+        val date = GregorianCalendar()
+        hour.text = String.format(Locale.US, "%02d", date.get(Calendar.HOUR))
+        min.text = String.format(Locale.US, "%02d", date.get(Calendar.MINUTE))
+        if (!prices.isEmpty()) {
+            // TODO: Display all prices
+            price.text = prices[0].current.toString()
+        }
+    }
+
+
     @Suppress("EXPERIMENTAL_FEATURE_WARNING")
     private fun chooseStock(name: String) = async(UI) {
         val deferred = bg { queryStockCodes(name) }
@@ -88,17 +102,9 @@ class MainActivity : AppCompatActivity() {
             openInputDialog()
         } else {
             selector(null, stockNames) { _, i ->
-                code = queryStockCodes[i].code
-                card.resume(code)
-                getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE).edit()
-                        .putString(PREFS_DEFAULT_KEY_CODE, code)
-                        .apply()
+                val code = queryStockCodes[i].code
+                DataSource.set(code)
             }
         }
-    }
-
-    companion object {
-        private const val DEFAULT_PREFS = "DEFAULT_PREFS"
-        private const val PREFS_DEFAULT_KEY_CODE = "PREFS_DEFAULT_KEY_CODE"
     }
 }
