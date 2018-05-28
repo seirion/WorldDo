@@ -24,13 +24,19 @@ private val realtimeResponseAdapter = NaverRealTimeResponse.jsonAdapter(moshi)
 private val stockCodeQueryResponseAdapter = StockCodeQueryResponse.jsonAdapter(moshi)
 
 fun getPriceInfo(codes: List<String>): List<PriceInfo> {
-    val client = OkHttpClient()
-    val request = Request.Builder()
-            .url(PRICE_INFO_QUERY_URL.format(codes.joinToString(",")))
-            .build()
-    val response = client.newCall(request).execute()
-    val jsonString = response.body()?.string()
-    Log.d(TAG, "log : $jsonString")
+    var jsonString: String? = null
+    try {
+        val client = OkHttpClient()
+        val request = Request.Builder()
+                .url(PRICE_INFO_QUERY_URL.format(codes.joinToString(",")))
+                .build()
+        val response = client.newCall(request).execute()
+        jsonString = response.body()?.string()
+        Log.d(TAG, "log : $jsonString")
+    } catch (e: Exception) {
+        // ignore exception
+        Log.d(TAG, "Exception on query: ", e)
+    }
     return getPriceInfoOf(jsonString ?: "")
 }
 
