@@ -31,7 +31,7 @@ object DataSource {
     }
 
     fun observeChanges(): Observable<List<PriceInfo>> {
-        return source.distinctUntilChanged()
+        return source
     }
 
     fun init(context: Context) {
