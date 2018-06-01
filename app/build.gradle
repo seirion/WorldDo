@@ -1,14 +1,15 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlin-kapt'
+
+apply from: 'version.gradle'
 
 android {
     compileSdkVersion 27
     defaultConfig {
+        versionCode getVersionCode()
+        versionName getVersionName()
         applicationId "com.seirion.worlddodook"
         minSdkVersion 22
         targetSdkVersion 27
@@ -17,6 +18,9 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            versionNameSuffix "-DEV"
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

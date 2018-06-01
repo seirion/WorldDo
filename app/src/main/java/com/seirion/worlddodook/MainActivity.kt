@@ -50,6 +50,12 @@ class MainActivity : AppCompatActivity() {
                 .subscribe({updateUi(it)})
     }
 
+    private fun versionName() =
+        applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0).versionName
+
+    private fun versionCode() =
+        applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0).versionCode
+
     override fun onStart() {
         DataSource.start()
         super.onStart()
