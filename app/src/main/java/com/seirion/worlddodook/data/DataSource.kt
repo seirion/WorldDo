@@ -17,7 +17,7 @@ object DataSource {
     private const val DEFAULT_PREFS = "DEFAULT_PREFS"
     private const val PREFS_DEFAULT_KEY_CODE = "PREFS_DEFAULT_KEY_CODE"
     private const val DEFAULT_KEY_CODE = "043710" // default ㅅㅇㄹㄱ
-    private const val EMISSION_COOL_TIME_MS = 10000
+    private const val EMISSION_COOL_TIME_MS = 10000L
 
     private var appContext: Context? = null
     private val source: BehaviorSubject<List<PriceInfo>> = BehaviorSubject.create()
