@@ -28,12 +28,13 @@ import org.jetbrains.anko.toast
 import org.jetbrains.anko.yesButton
 import android.view.ViewGroup
 import android.view.LayoutInflater
+import com.seirion.worlddodook.ui.WorldViewPager
 import kotlinx.coroutines.experimental.Deferred
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewPager: ViewPager
+    private lateinit var viewPager: WorldViewPager
     private lateinit var adapter: Adapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
