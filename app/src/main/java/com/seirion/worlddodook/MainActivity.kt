@@ -28,8 +28,11 @@ import org.jetbrains.anko.toast
 import org.jetbrains.anko.yesButton
 import android.view.ViewGroup
 import android.view.LayoutInflater
+import com.jakewharton.rxbinding.view.RxView
+import com.seirion.worlddodook.activity.SettingActivity
 import com.seirion.worlddodook.ui.WorldViewPager
 import kotlinx.coroutines.experimental.Deferred
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity() {
@@ -109,6 +112,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private class Adapter(context: Context, listener: (Any) -> Deferred<DialogInterface>) : PagerAdapter() {
+        private val activity = context
         private val inflater: LayoutInflater = LayoutInflater.from(context)
         private var hour: TextView? = null
         private var min: TextView? = null
@@ -129,6 +133,9 @@ class MainActivity : AppCompatActivity() {
                 view = inflater.inflate(R.layout.item_page_about, container, false)
                 val appContext = view.context.applicationContext
                 view.findViewById<TextView>(R.id.version).text = versionName(appContext)
+                val setting = view.findViewById<View>(R.id.settings)
+                RxView.clicks(setting).throttleFirst(2, TimeUnit.SECONDS)
+                        .subscribe({ SettingActivity.start(activity) })
             } else {
                 view = inflater.inflate(R.layout.item_page_card, container, false)
                 view.findViewById<View>(R.id.root).setOnLongClickListener {
