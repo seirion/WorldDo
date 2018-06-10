@@ -2,7 +2,6 @@ package com.seirion.worlddodook.data
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v4.view.ViewPager
 import android.util.Log
 import com.seirion.worlddodook.getPriceInfo
 import io.reactivex.Observable
@@ -66,6 +65,6 @@ object DataSource {
 
     private fun codeSaved(): String {
         val prefs = appContext?.getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE)
-        return prefs?.getString(PREFS_DEFAULT_KEY_CODE, DEFAULT_KEY_CODE) ?: DEFAULT_KEY_CODE
+        return prefs?.getString(PREFS_DEFAULT_KEY_CODE, DEFAULT_KEY_CODE)!!
     }
 }
