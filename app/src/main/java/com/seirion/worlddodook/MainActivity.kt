@@ -3,6 +3,7 @@ package com.seirion.worlddodook
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.os.SystemClock
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
@@ -120,10 +121,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private class Adapter(context: Context, listener: (Any) -> Deferred<DialogInterface>) : PagerAdapter() {
+        companion object {
+            private const val DOUBLE_CLICK_THRESHOLD_MS = 500L
+        }
+
         private val activity = context
         private val inflater: LayoutInflater = LayoutInflater.from(context)
         private val listener = listener
         private val views = ArrayList<View>(3)
+        private var prev = 0L // for checking double click
 
         override fun getCount(): Int {
             return 3
@@ -144,10 +150,19 @@ class MainActivity : AppCompatActivity() {
                         .subscribe({ SettingActivity.start(activity) })
             } else {
                 view = inflater.inflate(R.layout.item_page_card, container, false)
-                view.findViewById<View>(R.id.root).setOnLongClickListener {
+                val root = view.findViewById<View>(R.id.root)
+                root.setOnLongClickListener {
                     run(listener)
                     return@setOnLongClickListener true
                 }
+                RxView.clicks(root).subscribe({
+                            val now = SystemClock.elapsedRealtime()
+                            if (now - prev <= DOUBLE_CLICK_THRESHOLD_MS) {
+                                Log.d(TAG, "double click")
+                                showInformation(position)
+                            }
+                            prev = now
+                        })
                 if (position-1 < views.size) {
                     views[position-1] = view
                 } else {
@@ -176,6 +191,16 @@ class MainActivity : AppCompatActivity() {
             for (priceInfo: PriceInfo in prices) {
                 if (priceInfo.code == DataSource.get(index - 1)) {
                     view.findViewById<TextView>(R.id.price).text = priceInfo.current.toString()
+                    break
+                }
+            }
+        }
+
+        private fun showInformation(position: Int) {
+            val infoList = DataSource.getLatest()
+            for (info: PriceInfo in infoList) {
+                if (info.code == DataSource.get(position - 1)) {
+                    Log.d(TAG, "$info")
                     break
                 }
             }

@@ -60,6 +60,14 @@ data class NaverRealTimeData(
             "CLOSE" -> "장마감"
             else -> "장중"
         }
+
+    override fun toString(): String {
+        return "$name ($code)\n" +
+            "가격 : $current ($changeValue, $changeRate%)\n" +
+            "거래 : $quantity (대금 : $amount)\n" +
+            "고가 : $upperLimit\n" +
+            "저가 : $lowerLimit\n"
+    }
 }
 
 data class StockCodeQueryData(
