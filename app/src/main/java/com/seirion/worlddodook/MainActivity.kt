@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
@@ -36,6 +37,9 @@ import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        private const val TAG = "MainActivity"
+    }
 
     private lateinit var viewPager: WorldViewPager
     private lateinit var adapter: Adapter
@@ -54,13 +58,17 @@ class MainActivity : AppCompatActivity() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
             }
             override fun onPageSelected(position: Int) {
+                DataSource.stop()
+                if (0 < position) {
+                    DataSource.start()
+                }
             }
         })
 
         DataSource.init(this)
         DataSource.observeChanges()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ adapter.updateUi(it) })
+                .subscribe({ adapter.updateUi(viewPager.currentItem, it) })
     }
 
     override fun onStart() {
@@ -114,13 +122,11 @@ class MainActivity : AppCompatActivity() {
     private class Adapter(context: Context, listener: (Any) -> Deferred<DialogInterface>) : PagerAdapter() {
         private val activity = context
         private val inflater: LayoutInflater = LayoutInflater.from(context)
-        private var hour: TextView? = null
-        private var min: TextView? = null
-        private var price: TextView? = null
         private val listener = listener
+        private val views = ArrayList<View>(3)
 
         override fun getCount(): Int {
-            return 2
+            return 3
         }
 
         override fun isViewFromObject(view: View, `object`: Any): Boolean {
@@ -142,10 +148,11 @@ class MainActivity : AppCompatActivity() {
                     run(listener)
                     return@setOnLongClickListener true
                 }
-
-                hour = view.findViewById(R.id.hour)
-                min = view.findViewById(R.id.min)
-                price = view.findViewById(R.id.price)
+                if (position-1 < views.size) {
+                    views[position-1] = view
+                } else {
+                    views.add(view)
+                }
             }
             container.addView(view)
             return view
@@ -155,13 +162,22 @@ class MainActivity : AppCompatActivity() {
             container.removeView(`object` as View)
         }
 
-        fun updateUi(prices: List<PriceInfo>) {
+        fun updateUi(index: Int, prices: List<PriceInfo>) {
+            if (index == 0) {
+                return
+            }
+
             val date = GregorianCalendar()
-            hour?.text = String.format(Locale.US, "%02d", date.get(Calendar.HOUR))
-            min?.text = String.format(Locale.US, "%02d", date.get(Calendar.MINUTE))
-            if (!prices.isEmpty()) {
-                // TODO: Display all prices
-                price?.text = prices[0].current.toString()
+            val view = views[index-1]
+            Log.v(TAG, "index($index) : $view")
+            view.findViewById<TextView>(R.id.hour).text = String.format(Locale.US, "%02d", date.get(Calendar.HOUR))
+            view.findViewById<TextView>(R.id.min).text = String.format(Locale.US, "%02d", date.get(Calendar.MINUTE))
+
+            for (priceInfo: PriceInfo in prices) {
+                if (priceInfo.code == DataSource.get(index - 1)) {
+                    view.findViewById<TextView>(R.id.price).text = priceInfo.current.toString()
+                    break
+                }
             }
         }
     }
