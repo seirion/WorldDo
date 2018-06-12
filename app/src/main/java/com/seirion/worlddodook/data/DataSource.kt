@@ -8,6 +8,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import java.util.Collections
 import java.util.concurrent.TimeUnit
 
 @SuppressLint("StaticFieldLeak")
@@ -81,4 +82,11 @@ object DataSource {
             source.onComplete()
         }
     }
+
+    fun getLatest() =
+            (if (source.hasValue()) {
+                source.value
+            } else {
+                Collections.emptyList<PriceInfo>()
+            })!!
 }
