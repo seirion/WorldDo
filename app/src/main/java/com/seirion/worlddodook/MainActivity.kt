@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             selector(null, stockNames) { _, i ->
                 val code = queryStockCodes[i].code
-                DataSource.set(code)
+                DataSource.set(viewPager.currentItem, code)
             }
         }
     }

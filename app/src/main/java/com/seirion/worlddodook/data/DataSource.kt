@@ -14,21 +14,39 @@ import java.util.concurrent.TimeUnit
 object DataSource {
 
     private const val TAG = "DataSource"
-    private const val DEFAULT_PREFS = "DEFAULT_PREFS"
-    private const val PREFS_DEFAULT_KEY_CODE = "PREFS_DEFAULT_KEY_CODE"
-    private const val DEFAULT_KEY_CODE = "043710" // default ㅅㅇㄹㄱ
     private const val EMISSION_COOL_TIME_MS = 10000L
 
     private var appContext: Context? = null
     private val source: BehaviorSubject<List<PriceInfo>> = BehaviorSubject.create()
     private var disposable: Disposable? = null
+    private var codes: ArrayList<String>? = null
 
-    fun set(code: String) {
-        appContext?.getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE)!!.edit()
-                .putString(PREFS_DEFAULT_KEY_CODE, code)
-                .apply()
+    fun set(index:Int, code: String) {
+        if (codes == null && appContext != null) {
+            loadCodes(appContext!!)
+        }
 
+        codes?.let {
+            if (it.size <= index) {
+                it.add(code)
+            } else {
+                it[index] = code
+            }
+            saveCodes(appContext, it)
+        }
         restart()
+    }
+
+    fun get(index: Int): String {
+        if (codes == null) {
+            codes = loadCodes(appContext!!)
+        }
+        codes?.let {
+            if (index < it.size) {
+                return it[index]
+            }
+        }
+        return ""
     }
 
     fun observeChanges(): Observable<List<PriceInfo>> {
@@ -40,10 +58,11 @@ object DataSource {
     }
 
     fun start() {
-        val code = codeSaved()
+        if (codes == null) {
+            codes = loadCodes(appContext!!)
+        }
         disposable = Observable.interval(EMISSION_COOL_TIME_MS, TimeUnit.MILLISECONDS).startWith(0)
-                // TODO: Query multiple stocks
-                .map { getPriceInfo(listOf(code)) }
+                .map { getPriceInfo(codes!!) }
                 .subscribeOn(Schedulers.io())
                 .subscribe({ source.onNext(it) }, { Log.e(TAG, "error : ", it) })
     }
@@ -61,10 +80,5 @@ object DataSource {
         if (source.hasObservers()) {
             source.onComplete()
         }
-    }
-
-    private fun codeSaved(): String {
-        val prefs = appContext?.getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE)
-        return prefs?.getString(PREFS_DEFAULT_KEY_CODE, DEFAULT_KEY_CODE)!!
     }
 }
