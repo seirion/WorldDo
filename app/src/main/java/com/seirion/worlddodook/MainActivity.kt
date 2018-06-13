@@ -32,6 +32,7 @@ import android.view.ViewGroup
 import android.view.LayoutInflater
 import com.jakewharton.rxbinding.view.RxView
 import com.seirion.worlddodook.activity.SettingActivity
+import com.seirion.worlddodook.activity.StockInfoActivity
 import com.seirion.worlddodook.ui.WorldViewPager
 import kotlinx.coroutines.experimental.Deferred
 import java.util.concurrent.TimeUnit
@@ -201,6 +202,7 @@ class MainActivity : AppCompatActivity() {
             for (info: PriceInfo in infoList) {
                 if (info.code == DataSource.get(position - 1)) {
                     Log.d(TAG, "$info")
+                    StockInfoActivity.start(activity, info.toString())
                     break
                 }
             }
