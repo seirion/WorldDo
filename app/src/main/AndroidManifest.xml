@@ -19,6 +19,8 @@
         </activity>
 
         <activity android:name=".activity.SettingActivity" />
+        <activity android:name=".activity.StockInfoActivity"
+            android:theme="@style/Theme.Transparent" />
 
     </application>
 
