@@ -62,8 +62,13 @@ data class NaverRealTimeData(
         }
 
     override fun toString(): String {
+        val sign = when {
+            current > yesterdayClose -> "+"
+            current < yesterdayClose -> "-"
+            else -> ""
+        }
         return "$name ($code)\n" +
-            "가격 : $current ($changeValue, $changeRate%)\n" +
+            "가격 : $current ($sign$changeValue, $sign$changeRate%)\n" +
             "거래 : $quantity (대금 : $amount)\n" +
             "고가 : $high\n" +
             "저가 : $low\n"
