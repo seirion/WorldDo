@@ -124,16 +124,17 @@ class MainActivity : AppCompatActivity() {
     private class Adapter(context: Context, listener: (Any) -> Deferred<DialogInterface>) : PagerAdapter() {
         companion object {
             private const val DOUBLE_CLICK_THRESHOLD_MS = 500L
+            private const val CODE_NUM = 2
         }
 
         private val activity = context
         private val inflater: LayoutInflater = LayoutInflater.from(context)
         private val listener = listener
-        private val views = ArrayList<View>(3)
+        private val views = ArrayList<View>(CODE_NUM)
         private var prev = 0L // for checking double click
 
         override fun getCount(): Int {
-            return 3
+            return 1 + CODE_NUM // 1 is for settings
         }
 
         override fun isViewFromObject(view: View, `object`: Any): Boolean {
