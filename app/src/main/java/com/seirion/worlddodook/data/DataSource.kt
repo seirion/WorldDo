@@ -8,7 +8,9 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import java.util.Calendar
 import java.util.Collections
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 @SuppressLint("StaticFieldLeak")
@@ -21,6 +23,7 @@ object DataSource {
     private val source: BehaviorSubject<List<PriceInfo>> = BehaviorSubject.create()
     private var disposable: Disposable? = null
     private var codes: ArrayList<String>? = null
+    var updateTime: Date? = null // time when last updated
 
     fun set(index:Int, code: String) {
         if (codes == null && appContext != null) {
@@ -65,6 +68,7 @@ object DataSource {
         disposable = Observable.interval(EMISSION_COOL_TIME_MS, TimeUnit.MILLISECONDS).startWith(0)
                 .map { getPriceInfo(codes!!) }
                 .subscribeOn(Schedulers.io())
+                .doOnNext({ updateTime = Calendar.getInstance().time })
                 .subscribe({ source.onNext(it) }, { Log.e(TAG, "error : ", it) })
     }
 
