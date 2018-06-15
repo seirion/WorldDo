@@ -199,14 +199,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun showInformation(position: Int) {
-            val infoList = DataSource.getLatest()
-            for (info: PriceInfo in infoList) {
-                if (info.code == DataSource.get(position - 1)) {
-                    Log.d(TAG, "$info")
-                    StockInfoActivity.start(activity, info.toString())
-                    break
-                }
-            }
+            StockInfoActivity.start(activity, DataSource.get(position - 1))
         }
     }
 }
