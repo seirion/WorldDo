@@ -52,12 +52,12 @@ class StockInfoActivity : AppCompatActivity() {
 
     private fun formatting(date: Date?) =
         date?.let {
-            val dateFormat = SimpleDateFormat("hh:mm:ss", Locale.getDefault())
             dateFormat.format(it)
         } ?: ""
 
     companion object {
         private const val TAG = "PrinceInfoActivity"
+        private val dateFormat = SimpleDateFormat("hh:mm:ss", Locale.getDefault())
         private var code: String = ""
 
         fun start(activity: Context, code: String) {
