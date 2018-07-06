@@ -3,8 +3,8 @@ package com.seirion.worlddodook.data
 import android.content.Context
 import android.util.Log
 
+const val DEFAULT_PREFS = "DEFAULT_PREFS"
 private const val TAG = "LocalData"
-private const val DEFAULT_PREFS = "DEFAULT_PREFS"
 private const val PREFS_DEFAULT_KEY_CODE = "PREFS_DEFAULT_KEY_CODE"
 private const val DEFAULT_KEY_CODE = "043710" // default ㅅㅇㄹㄱ
 private const val CODE_DELIMITER = "-"
