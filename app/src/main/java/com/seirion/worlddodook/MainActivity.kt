@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_main)
         viewPager = findViewById(R.id.viewPager)
-        adapter = Adapter(this, { this.openInputDialog() })
+        adapter = Adapter(this) { this.openInputDialog() }
         viewPager.adapter = adapter
         viewPager.currentItem = 1
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         DataSource.init(this)
         DataSource.observeChanges()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ adapter.updateUi(viewPager.currentItem, it) })
+                .subscribe { adapter.updateUi(viewPager.currentItem, it) }
     }
 
     override fun onStart() {
@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity() {
                 view.findViewById<TextView>(R.id.version).text = versionName(appContext)
                 val setting = view.findViewById<View>(R.id.settings)
                 RxView.clicks(setting).throttleFirst(2, TimeUnit.SECONDS)
-                        .subscribe({ SettingActivity.start(activity) })
+                        .subscribe { SettingActivity.start(activity) }
             } else {
                 view = inflater.inflate(R.layout.item_page_card, container, false)
                 val root = view.findViewById<View>(R.id.root)
@@ -157,14 +157,14 @@ class MainActivity : AppCompatActivity() {
                     run(listener)
                     return@setOnLongClickListener true
                 }
-                RxView.clicks(root).subscribe({
-                            val now = SystemClock.elapsedRealtime()
-                            if (now - prev <= DOUBLE_CLICK_THRESHOLD_MS) {
-                                Log.d(TAG, "double click")
-                                showInformation(position)
-                            }
-                            prev = now
-                        })
+                RxView.clicks(root).subscribe {
+                    val now = SystemClock.elapsedRealtime()
+                    if (now - prev <= DOUBLE_CLICK_THRESHOLD_MS) {
+                        Log.d(TAG, "double click")
+                        showInformation(position)
+                    }
+                    prev = now
+                }
                 if (position-1 < views.size) {
                     views[position-1] = view
                 } else {
