@@ -33,6 +33,7 @@ import android.view.LayoutInflater
 import com.jakewharton.rxbinding.view.RxView
 import com.seirion.worlddodook.activity.SettingActivity
 import com.seirion.worlddodook.activity.StockInfoActivity
+import com.seirion.worlddodook.data.Settings
 import com.seirion.worlddodook.ui.WorldViewPager
 import kotlinx.coroutines.experimental.Deferred
 import java.util.concurrent.TimeUnit
@@ -67,6 +68,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        Settings.init(applicationContext)
         DataSource.init(this)
         DataSource.observeChanges()
                 .observeOn(AndroidSchedulers.mainThread())
