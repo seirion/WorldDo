@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
         private val activity = context
         private val inflater: LayoutInflater = LayoutInflater.from(context)
         private val listener = listener
-        private val views = ArrayList<View>(5)
+        private val views = ArrayList<View>(Settings.MAX_CODE_NUM)
         private var prev = 0L // for checking double click
         var codeNum = codeNum
 

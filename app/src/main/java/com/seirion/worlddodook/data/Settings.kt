@@ -12,6 +12,8 @@ object Settings {
     private lateinit var appContext: Context
     private var settingChanges: BehaviorSubject<Int> = BehaviorSubject.create()
 
+    const val MAX_CODE_NUM = 5
+
     var codeNum = 1
         set(value) {
             if (field != value) {
