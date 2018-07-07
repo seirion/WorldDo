@@ -4,17 +4,54 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.widget.EditText
 import com.seirion.worlddodook.R
+import com.seirion.worlddodook.data.Settings
 
 
 class SettingActivity : AppCompatActivity() {
 
+    private lateinit var codeNum: EditText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
+        codeNum = findViewById(R.id.code_num)
+        codeNum.setText(Settings.codeNum.toString())
+        codeNum.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                Log.d(TAG, "lose focus")
+                codeNum.setText(Settings.codeNum.toString())
+            }
+        }
+        codeNum.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                try {
+                    var num = s.toString().toInt()
+                    if (num < 1) {
+                        num = 1
+                    } else if (5 < num) {
+                        num = 5
+                    }
+                    Settings.codeNum = num
+                } catch (e: NumberFormatException) {
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
     }
 
     companion object {
+        private const val TAG = "SettingActivity"
         fun start(activity: Context) {
             activity.startActivity(Intent(activity, SettingActivity::class.java))
         }
