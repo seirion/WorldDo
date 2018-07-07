@@ -51,8 +51,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_main)
+        Settings.init(applicationContext)
+
         viewPager = findViewById(R.id.viewPager)
-        adapter = Adapter(this) { this.openInputDialog() }
+        adapter = Adapter(this, Settings.codeNum) { this.openInputDialog() }
         viewPager.adapter = adapter
         viewPager.currentItem = 1
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -68,11 +70,16 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        Settings.init(applicationContext)
         DataSource.init(this)
         DataSource.observeChanges()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { adapter.updateUi(viewPager.currentItem, it) }
+
+        Settings.observeSettingChanges()
+                .subscribe {
+                    adapter.codeNum = it
+                    adapter.notifyDataSetChanged()
+                }
     }
 
     override fun onStart() {
@@ -123,20 +130,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private class Adapter(context: Context, listener: (Any) -> Deferred<DialogInterface>) : PagerAdapter() {
+    private class Adapter(context: Context, codeNum: Int, listener: (Any) -> Deferred<DialogInterface>) : PagerAdapter() {
         companion object {
             private const val DOUBLE_CLICK_THRESHOLD_MS = 500L
-            private const val CODE_NUM = 2
         }
 
         private val activity = context
         private val inflater: LayoutInflater = LayoutInflater.from(context)
         private val listener = listener
-        private val views = ArrayList<View>(CODE_NUM)
+        private val views = ArrayList<View>(5)
         private var prev = 0L // for checking double click
+        var codeNum = codeNum
 
         override fun getCount(): Int {
-            return 1 + CODE_NUM // 1 is for settings
+            return 1 + codeNum // 1 is for settings
         }
 
         override fun isViewFromObject(view: View, `object`: Any): Boolean {
