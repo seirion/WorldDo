@@ -10,4 +10,5 @@
 
     <color name="time_color">#555555</color>
     <color name="price_color">#555555</color>
+    <color name="settings_color">@color/gray44</color>
 </resources>

@@ -10,13 +10,16 @@ object Settings {
     private lateinit var appContext: Context
     var codeNum = 1
         set(value) {
-            field = value
-            appContext.getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE).edit()
-                    .putInt(PREFS_CODE_NUM, codeNum)
-                    .apply()
+            if (field != value) {
+                field = value
+                appContext.getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE).edit()
+                        .putInt(PREFS_CODE_NUM, codeNum)
+                        .apply()
+            }
         }
 
     fun init(appContext: Context) {
+        this.appContext = appContext
         val prefs = appContext.getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE)
         codeNum = prefs.getInt(PREFS_CODE_NUM, codeNum)
     }

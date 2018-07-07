@@ -17,4 +17,9 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
+
+    <style name="SettingText">
+        <item name="android:textColor">@color/settings_color</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>

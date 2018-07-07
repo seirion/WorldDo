@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">WorldDodook</string>
     <string name="version">Version</string>
+    <string name="code_num">종목 수(1~5)</string>
 </resources>
