@@ -18,8 +18,9 @@
             style="@style/SettingText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingEnd="10dp"
             android:text="@string/code_num"
-            />
+            tools:ignore="RtlSymmetry" />
 
         <EditText
             style="@style/SettingText"
@@ -27,15 +28,35 @@
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:selectAllOnFocus="true"
-            />
+            android:selectAllOnFocus="true" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:paddingTop="5dp"
-        android:background="@color/gray44" />
+    <View style="@style/SettingSeparator" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/SettingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="10dp"
+            android:text="@string/cool_time"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            style="@style/SettingText"
+            android:id="@+id/cool_time"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:selectAllOnFocus="true" />
+
+    </LinearLayout>
+
+    <View style="@style/SettingSeparator" />
 
 </LinearLayout>
