@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit
 object DataSource {
 
     private const val TAG = "DataSource"
-    private const val EMISSION_COOL_TIME_MS = 10000L
 
     private var appContext: Context? = null
     private val source: BehaviorSubject<List<PriceInfo>> = BehaviorSubject.create()
@@ -65,10 +64,11 @@ object DataSource {
         if (codes == null) {
             codes = loadCodes(appContext!!)
         }
-        disposable = Observable.interval(EMISSION_COOL_TIME_MS, TimeUnit.MILLISECONDS).startWith(0)
+        val coolTime = Settings.coolTimeSec
+        disposable = Observable.interval(coolTime, TimeUnit.SECONDS).startWith(0)
                 .map { getPriceInfo(codes!!) }
                 .subscribeOn(Schedulers.io())
-                .doOnNext({ updateTime = Calendar.getInstance().time })
+                .doOnNext { updateTime = Calendar.getInstance().time }
                 .subscribe({ source.onNext(it) }, { Log.e(TAG, "error : ", it) })
     }
 
@@ -76,7 +76,7 @@ object DataSource {
         disposable?.dispose()
     }
 
-    private fun restart() {
+    fun restart() {
         stop()
         start()
     }

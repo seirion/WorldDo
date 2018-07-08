@@ -9,6 +9,8 @@ import rx.Observable
 object Settings {
 
     private const val PREFS_CODE_NUM = "PREFS_CODE_NUM"
+    private const val PREFS_COOL_TIME = "PREFS_COOL_TIME"
+
     private lateinit var appContext: Context
     private var settingChanges: BehaviorSubject<Int> = BehaviorSubject.create()
 
@@ -21,6 +23,17 @@ object Settings {
                 settingChanges.onNext(field)
                 appContext.getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE).edit()
                         .putInt(PREFS_CODE_NUM, codeNum)
+                        .apply()
+            }
+        }
+
+    var coolTimeSec = 10L
+        set(value) {
+            if (field != value) {
+                field = value
+                DataSource.restart()
+                appContext.getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE).edit()
+                        .putLong(PREFS_COOL_TIME, field)
                         .apply()
             }
         }
