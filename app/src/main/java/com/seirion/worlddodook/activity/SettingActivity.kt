@@ -15,6 +15,7 @@ import com.seirion.worlddodook.data.Settings
 class SettingActivity : AppCompatActivity() {
 
     private lateinit var codeNum: EditText
+    private lateinit var coolTime: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +39,35 @@ class SettingActivity : AppCompatActivity() {
                         num = 5
                     }
                     Settings.codeNum = num
+                } catch (e: NumberFormatException) {
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
+
+        coolTime = findViewById(R.id.cool_time)
+        coolTime.setText(Settings.coolTimeSec.toString())
+        coolTime.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                Log.d(TAG, "lose focus")
+                coolTime.setText(Settings.coolTimeSec.toString())
+            }
+        }
+        coolTime.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                try {
+                    var num = s.toString().toLong()
+                    if (num < 3) {
+                        num = 3
+                    } else if (30 < num) {
+                        num = 30
+                    }
+                    Settings.coolTimeSec = num
                 } catch (e: NumberFormatException) {
                 }
             }
