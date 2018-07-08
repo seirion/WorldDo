@@ -22,4 +22,12 @@
         <item name="android:textColor">@color/settings_color</item>
         <item name="android:textSize">16sp</item>
     </style>
+
+    <style name="SettingSeparator">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:background">@color/gray44</item>
+    </style>
+
 </resources>
