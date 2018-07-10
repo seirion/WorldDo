@@ -14,6 +14,7 @@ object Settings {
     private lateinit var appContext: Context
     private var settingChanges: BehaviorSubject<Int> = BehaviorSubject.create()
 
+    const val MIN_CODE_NUM = 1
     const val MAX_CODE_NUM = 5
 
     var codeNum = 1
@@ -26,6 +27,9 @@ object Settings {
                         .apply()
             }
         }
+
+    const val MIN_COOL_TIME_SEC = 3L
+    const val MAX_COOL_TIME_SEC = 30L
 
     var coolTimeSec = 10L
         set(value) {
