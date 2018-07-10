@@ -33,11 +33,8 @@ class SettingActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable) {
                 try {
                     var num = s.toString().toInt()
-                    if (num < 1) {
-                        num = 1
-                    } else if (5 < num) {
-                        num = 5
-                    }
+                    num = maxOf(num, 1)
+                    num = minOf(num, 5)
                     Settings.codeNum = num
                 } catch (e: NumberFormatException) {
                 }
@@ -62,11 +59,8 @@ class SettingActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable) {
                 try {
                     var num = s.toString().toLong()
-                    if (num < 3) {
-                        num = 3
-                    } else if (30 < num) {
-                        num = 30
-                    }
+                    num = maxOf(num, 3)
+                    num = minOf(num, 30)
                     Settings.coolTimeSec = num
                 } catch (e: NumberFormatException) {
                 }
