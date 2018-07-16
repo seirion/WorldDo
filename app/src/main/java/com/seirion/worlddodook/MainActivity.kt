@@ -1,5 +1,6 @@
 package com.seirion.worlddodook
 
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -8,7 +9,10 @@ import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
@@ -28,8 +32,6 @@ import org.jetbrains.anko.selector
 import org.jetbrains.anko.singleLine
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.yesButton
-import android.view.ViewGroup
-import android.view.LayoutInflater
 import com.jakewharton.rxbinding.view.RxView
 import com.seirion.worlddodook.activity.SettingActivity
 import com.seirion.worlddodook.activity.StockInfoActivity
@@ -130,12 +132,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private class Adapter(context: Context, codeNum: Int, listener: (Any) -> Deferred<DialogInterface>) : PagerAdapter() {
+    private class Adapter(context: Activity, codeNum: Int, listener: (Any) -> Deferred<DialogInterface>) : PagerAdapter() {
         companion object {
             private const val DOUBLE_CLICK_THRESHOLD_MS = 500L
         }
 
-        private val activity = context
+        private val activity: Activity = context
         private val inflater: LayoutInflater = LayoutInflater.from(context)
         private val listener = listener
         private val views = ArrayList<View>(Settings.MAX_CODE_NUM)
@@ -166,6 +168,21 @@ class MainActivity : AppCompatActivity() {
                     run(listener)
                     return@setOnLongClickListener true
                 }
+                root.setOnTouchListener(object : View.OnTouchListener {
+                    private var start: Float = 0f
+                    override fun onTouch(v: View, event: MotionEvent): Boolean {
+                        when (event.action) {
+                            MotionEvent.ACTION_DOWN -> start = event.y
+                            MotionEvent.ACTION_UP -> {
+                                if ((event.y - start) < -200f) {
+                                    activity.finish()
+                                }
+                            }
+                        }
+                        return@onTouch false
+                    }
+                })
+
                 RxView.clicks(root).subscribe {
                     val now = SystemClock.elapsedRealtime()
                     if (now - prev <= DOUBLE_CLICK_THRESHOLD_MS) {
