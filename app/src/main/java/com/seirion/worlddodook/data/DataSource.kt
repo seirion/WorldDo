@@ -19,7 +19,7 @@ object DataSource {
     private const val TAG = "DataSource"
 
     private var appContext: Context? = null
-    private val source: BehaviorSubject<List<PriceInfo>> = BehaviorSubject.create()
+    private var source: BehaviorSubject<List<PriceInfo>> = BehaviorSubject.create()
     private var disposable: Disposable? = null
     private var codes: ArrayList<String>? = null
     var updateTime: Date? = null // time when last updated
@@ -85,6 +85,7 @@ object DataSource {
         if (source.hasObservers()) {
             source.onComplete()
         }
+        source = BehaviorSubject.create()
     }
 
     fun getLatest() =
