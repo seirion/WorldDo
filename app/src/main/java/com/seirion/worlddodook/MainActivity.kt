@@ -216,11 +216,9 @@ class MainActivity : AppCompatActivity() {
             view.findViewById<TextView>(R.id.hour).text = String.format(Locale.US, "%02d", date.get(Calendar.HOUR))
             view.findViewById<TextView>(R.id.min).text = String.format(Locale.US, "%02d", date.get(Calendar.MINUTE))
 
-            for (priceInfo: PriceInfo in prices) {
-                if (priceInfo.code == DataSource.get(index - 1)) {
-                    view.findViewById<TextView>(R.id.price).text = priceInfo.current.toString()
-                    break
-                }
+            val targetCode = DataSource.get(index - 1)
+            prices.firstOrNull { it.code == targetCode }?.let {
+                view.findViewById<TextView>(R.id.price).text = it.current.toString()
             }
         }
 
