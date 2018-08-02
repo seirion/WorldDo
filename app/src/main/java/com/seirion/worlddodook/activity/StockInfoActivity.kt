@@ -26,11 +26,11 @@ class StockInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stock_info)
 
-        findViewById<View>(R.id.outside).setOnClickListener({ finish() })
+        findViewById<View>(R.id.outside).setOnClickListener { finish() }
 
         disposable = DataSource.observeChanges()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ updateUi(it) })
+                .subscribe { updateUi(it) }
     }
 
     override fun onDestroy() {
@@ -45,7 +45,7 @@ class StockInfoActivity : AppCompatActivity() {
     }
 
     private fun priceInfo(infoList: List<PriceInfo>, code: String) =
-            infoList.firstOrNull({ it.code == code })?.let {
+            infoList.firstOrNull { it.code == code }?.let {
                 Log.d(TAG, "info : $it")
                 it.toString()
             } ?: ""
