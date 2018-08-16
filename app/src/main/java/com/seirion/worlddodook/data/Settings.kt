@@ -35,7 +35,6 @@ object Settings {
         set(value) {
             if (field != value) {
                 field = value
-                DataSource.restart()
                 appContext.getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE).edit()
                         .putLong(PREFS_COOL_TIME, field)
                         .apply()
