@@ -45,6 +45,7 @@ object Settings {
         this.appContext = appContext
         val prefs = appContext.getSharedPreferences(DEFAULT_PREFS, Context.MODE_PRIVATE)
         codeNum = prefs.getInt(PREFS_CODE_NUM, codeNum)
+        coolTimeSec = prefs.getLong(PREFS_COOL_TIME, coolTimeSec)
     }
 
     fun observeSettingChanges(): Observable<Int> {
