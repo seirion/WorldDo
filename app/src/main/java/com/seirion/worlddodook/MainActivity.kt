@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.viewPager)
         adapter = Adapter(this, Settings.codeNum) { this.openInputDialog() }
         viewPager.adapter = adapter
-        viewPager.currentItem = 1
+        viewPager.currentItem = Settings.currentPage
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }
@@ -68,6 +68,7 @@ class MainActivity : AppCompatActivity() {
                 DataSource.stop()
                 if (0 < position) {
                     DataSource.start()
+                    Settings.currentPage = position
                 }
             }
         })
@@ -194,7 +195,9 @@ class MainActivity : AppCompatActivity() {
                 if (position-1 < views.size) {
                     views[position-1] = view
                 } else {
-                    views.add(view)
+                    while (views.size < position) {
+                        views.add(view)
+                    }
                 }
             }
             container.addView(view)
