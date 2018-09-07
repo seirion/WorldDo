@@ -63,7 +63,8 @@ class StockInfoActivity : AppCompatActivity() {
         fun start(activity: Context, code: String) {
             StockInfoActivity.code = code
             val intent = Intent(activity, StockInfoActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_NO_ANIMATION)
             activity.startActivity(intent)
         }
     }
