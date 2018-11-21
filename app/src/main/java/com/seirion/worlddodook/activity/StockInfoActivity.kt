@@ -26,6 +26,7 @@ class StockInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stock_info)
 
+        setFinishOnTouchOutside(true)
         findViewById<View>(R.id.outside).setOnClickListener { finish() }
 
         disposable = DataSource.observeChanges()
