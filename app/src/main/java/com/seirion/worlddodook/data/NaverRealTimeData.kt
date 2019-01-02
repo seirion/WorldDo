@@ -4,6 +4,7 @@ import com.squareup.moshi.FromJson
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.ToJson
+import java.text.DecimalFormat
 
 @JsonClass(generateAdapter = true)
 data class NaverRealTimeResponse(
@@ -68,12 +69,14 @@ data class NaverRealTimeData(
             else -> ""
         }
         return "$name ($code)\n" +
-            "가격 : $current ($sign$changeValue, $sign$changeRate%)\n" +
-            "거래 : $quantity (대금 : $amount)\n" +
-            "고가 : $high\n" +
-            "저가 : $low\n"
+            "가격 : ${decimalFormat(current)} ($sign${decimalFormat(changeValue)}, $sign$changeRate%)\n" +
+            "거래 : ${decimalFormat(quantity)} (대금 : ${decimalFormat(amount)})\n" +
+            "고가 : ${decimalFormat(high)}\n" +
+            "저가 : ${decimalFormat(low)}\n"
     }
 }
+
+fun decimalFormat(value: Number) = DecimalFormat("#,##0").format(value)!!
 
 data class StockCodeQueryData(
         val code: String,
