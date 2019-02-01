@@ -15,8 +15,8 @@ import okhttp3.Request
 import java.io.IOException
 import java.net.URLEncoder
 
-private const val STOCK_CODE_QUERY_URL = "http://ac.finance.naver.com:11002/ac?q=%s&q_enc=utf-8&st=111&frm=stock&r_format=json&r_enc=utf-8&r_unicode=1&t_koreng=1&r_lt=111"
-private const val PRICE_INFO_QUERY_URL = "http://polling.finance.naver.com/api/realtime.nhn?query=SERVICE_ITEM:%s"
+private const val STOCK_CODE_QUERY_URL = "https://ac.finance.naver.com:11002/ac?q=%s&q_enc=utf-8&st=111&frm=stock&r_format=json&r_enc=utf-8&r_unicode=1&t_koreng=1&r_lt=111"
+private const val PRICE_INFO_QUERY_URL = "https://polling.finance.naver.com/api/realtime.nhn?query=SERVICE_ITEM:%s"
 private const val TAG = "Log"
 
 private val moshi = Moshi.Builder().add(StockCodeQueryDataAdapter()).build()
