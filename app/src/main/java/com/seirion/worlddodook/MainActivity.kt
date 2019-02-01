@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private class Adapter(context: Activity, codeNum: Int, listener: (Any) -> Deferred<DialogInterface>) : PagerAdapter() {
+    private class Adapter(context: Activity, codeNum: Int, listener: () -> Unit) : PagerAdapter() {
         companion object {
             private const val DOUBLE_CLICK_THRESHOLD_MS = 500L
         }
@@ -166,7 +166,7 @@ class MainActivity : AppCompatActivity() {
                 view = inflater.inflate(R.layout.item_page_card, container, false)
                 val root = view.findViewById<View>(R.id.root)
                 root.setOnLongClickListener {
-                    run(listener)
+                    listener()
                     return@setOnLongClickListener true
                 }
                 root.setOnTouchListener(object : View.OnTouchListener {

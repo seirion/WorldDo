@@ -19,7 +19,7 @@ private const val STOCK_CODE_QUERY_URL = "http://ac.finance.naver.com:11002/ac?q
 private const val PRICE_INFO_QUERY_URL = "http://polling.finance.naver.com/api/realtime.nhn?query=SERVICE_ITEM:%s"
 private const val TAG = "Log"
 
-private val moshi: Moshi = Moshi.Builder().add(StockCodeQueryDataAdapter()).build()
+private val moshi = Moshi.Builder().add(StockCodeQueryDataAdapter()).build()
 private val realtimeResponseAdapter = NaverRealTimeResponse.jsonAdapter(moshi)
 private val stockCodeQueryResponseAdapter = StockCodeQueryResponse.jsonAdapter(moshi)
 
