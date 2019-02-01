@@ -1,8 +1,7 @@
 package com.seirion.worlddodook
 
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.os.SystemClock
 import android.support.v4.view.PagerAdapter
@@ -37,7 +36,6 @@ import com.seirion.worlddodook.activity.SettingActivity
 import com.seirion.worlddodook.activity.StockInfoActivity
 import com.seirion.worlddodook.data.Settings
 import com.seirion.worlddodook.ui.WorldViewPager
-import kotlinx.coroutines.experimental.Deferred
 import java.util.concurrent.TimeUnit
 
 
@@ -49,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewPager: WorldViewPager
     private lateinit var adapter: Adapter
 
+    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -66,7 +65,7 @@ class MainActivity : AppCompatActivity() {
             }
             override fun onPageSelected(position: Int) {
                 DataSource.stop()
-                if (0 < position) {
+                if (position < Settings.codeNum) {
                     DataSource.start()
                     Settings.currentPage = position
                 }
@@ -128,7 +127,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             selector(null, stockNames) { _, i ->
                 val code = queryStockCodes[i].code
-                DataSource.set(viewPager.currentItem - 1, code)
+                DataSource.set(viewPager.currentItem, code)
             }
         }
     }
@@ -143,6 +142,7 @@ class MainActivity : AppCompatActivity() {
         private val listener = listener
         private val views = ArrayList<View>(Settings.MAX_CODE_NUM)
         private var prev = 0L // for checking double click
+        private var start: Float = 0f // for checking finish condition
         var codeNum = codeNum
 
         override fun getCount(): Int {
@@ -155,10 +155,9 @@ class MainActivity : AppCompatActivity() {
 
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
             val view: View
-            if (position == 0) {
+            if (position == codeNum) {
                 view = inflater.inflate(R.layout.item_page_about, container, false)
-                val appContext = view.context.applicationContext
-                view.findViewById<TextView>(R.id.version).text = versionName(appContext)
+                view.findViewById<TextView>(R.id.version).text = BuildConfig.VERSION_NAME
                 val setting = view.findViewById<View>(R.id.settings)
                 RxView.clicks(setting).throttleFirst(2, TimeUnit.SECONDS)
                         .subscribe { SettingActivity.start(activity) }
@@ -169,20 +168,17 @@ class MainActivity : AppCompatActivity() {
                     listener()
                     return@setOnLongClickListener true
                 }
-                root.setOnTouchListener(object : View.OnTouchListener {
-                    private var start: Float = 0f
-                    override fun onTouch(v: View, event: MotionEvent): Boolean {
-                        when (event.action) {
-                            MotionEvent.ACTION_DOWN -> start = event.y
-                            MotionEvent.ACTION_UP -> {
-                                if ((event.y - start) < -200f) {
-                                    activity.finish()
-                                }
+                root.setOnTouchListener { _, event ->
+                    when (event.action) {
+                        MotionEvent.ACTION_DOWN -> start = event.y
+                        MotionEvent.ACTION_UP -> {
+                            if ((event.y - start) < -200f) {
+                                activity.finish()
                             }
                         }
-                        return@onTouch false
                     }
-                })
+                    false
+                }
 
                 RxView.clicks(root).subscribe {
                     val now = SystemClock.elapsedRealtime()
@@ -192,10 +188,10 @@ class MainActivity : AppCompatActivity() {
                     }
                     prev = now
                 }
-                if (position-1 < views.size) {
-                    views[position-1] = view
+                if (position < views.size) {
+                    views[position] = view
                 } else {
-                    while (views.size < position) {
+                    while (views.size <= position) {
                         views.add(view)
                     }
                 }
@@ -209,31 +205,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         fun updateUi(index: Int, prices: List<PriceInfo>) {
-            if (index == 0) {
+            if (index == Settings.codeNum) {
                 return
             }
 
             val date = GregorianCalendar()
-            val view = views[index-1]
+            val view = views[index]
             Log.v(TAG, "index($index) : $view")
             view.findViewById<TextView>(R.id.hour).text = String.format(Locale.US, "%02d", date.get(Calendar.HOUR))
             view.findViewById<TextView>(R.id.min).text = String.format(Locale.US, "%02d", date.get(Calendar.MINUTE))
 
-            val targetCode = DataSource.get(index - 1)
+            val targetCode = DataSource.get(index)
             prices.firstOrNull { it.code == targetCode }?.let {
                 view.findViewById<TextView>(R.id.price).text = it.current.toString()
             }
         }
 
         private fun showInformation(position: Int) {
-            StockInfoActivity.start(activity, DataSource.get(position - 1))
+            StockInfoActivity.start(activity, DataSource.get(position))
         }
     }
 }
-
-fun versionName(applicationContext: Context) =
-        applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0).versionName
-
-fun versionCode(applicationContext: Context) =
-        applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0).versionCode
-
