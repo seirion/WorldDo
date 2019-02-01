@@ -18,13 +18,7 @@ import android.widget.TextView
 import com.seirion.worlddodook.data.DataSource
 import com.seirion.worlddodook.data.PriceInfo
 import io.reactivex.android.schedulers.AndroidSchedulers
-import java.util.Calendar
-import java.util.GregorianCalendar
-import java.util.Locale
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.alert
-import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.customView
 import org.jetbrains.anko.editText
 import org.jetbrains.anko.selector
@@ -36,7 +30,13 @@ import com.seirion.worlddodook.activity.SettingActivity
 import com.seirion.worlddodook.activity.StockInfoActivity
 import com.seirion.worlddodook.data.Settings
 import com.seirion.worlddodook.ui.WorldViewPager
+import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
+import java.util.Calendar
+import java.util.GregorianCalendar
+import java.util.Locale
 
 
 class MainActivity : AppCompatActivity() {
@@ -99,8 +99,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    @Suppress("EXPERIMENTAL_FEATURE_WARNING")
-    private fun openInputDialog() = async(UI) {
+    private fun openInputDialog() {
         alert {
             lateinit var stockNameEditText: EditText
             customView {
@@ -116,20 +115,26 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    @Suppress("EXPERIMENTAL_FEATURE_WARNING")
-    private fun chooseStock(name: String) = async(UI) {
-        val deferred = bg { queryStockCodes(name) }
-        val queryStockCodes = deferred.await()
-        val stockNames = queryStockCodes.map { it.name }
-        if (stockNames.isEmpty()) {
-            toast("ㅇㅇ 없어")
-            openInputDialog()
-        } else {
-            selector(null, stockNames) { _, i ->
-                val code = queryStockCodes[i].code
-                DataSource.set(viewPager.currentItem, code)
-            }
-        }
+    @SuppressLint("CheckResult")
+    private fun chooseStock(name: String) {
+        Observable.fromCallable { queryStockCodes(name) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ list ->
+                    val stockNames = list.map { it.name }
+                    if (stockNames.isEmpty()) {
+                        toast("ㅇㅇ 없어")
+                        openInputDialog()
+                    } else {
+                        selector(null, stockNames) { _, i ->
+                            val code = list[i].code
+                            DataSource.set(viewPager.currentItem, code)
+                        }
+                    }
+                }, {
+                    Log.e(TAG, "Failed to queryStockCodes()")
+                    it.printStackTrace()
+                })
     }
 
     private class Adapter(context: Activity, codeNum: Int, listener: () -> Unit) : PagerAdapter() {
