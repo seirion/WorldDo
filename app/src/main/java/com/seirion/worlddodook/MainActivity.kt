@@ -137,18 +137,15 @@ class MainActivity : AppCompatActivity() {
                 })
     }
 
-    private class Adapter(context: Activity, codeNum: Int, listener: () -> Unit) : PagerAdapter() {
+    private class Adapter(val activity: Activity, var codeNum: Int, val listener: () -> Unit) : PagerAdapter() {
         companion object {
             private const val DOUBLE_CLICK_THRESHOLD_MS = 500L
         }
 
-        private val activity: Activity = context
-        private val inflater: LayoutInflater = LayoutInflater.from(context)
-        private val listener = listener
+        private val inflater: LayoutInflater = LayoutInflater.from(activity.applicationContext)
         private val views = ArrayList<View>(Settings.MAX_CODE_NUM)
         private var prev = 0L // for checking double click
         private var start: Float = 0f // for checking finish condition
-        var codeNum = codeNum
 
         override fun getCount(): Int {
             return 1 + codeNum // 1 is for settings
