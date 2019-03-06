@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WorldDodook</string>
+    <string name="app_name">월급도둑</string>
     <string name="version">Version</string>
     <string name="code_num">종목 수(1~5)</string>
     <string name="cool_time">갱신 주기(3~30초)</string>
