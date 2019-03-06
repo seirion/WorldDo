@@ -1,4 +1,4 @@
-package com.seirion.worlddodook
+package com.seirion.world
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -15,8 +15,8 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
-import com.seirion.worlddodook.data.DataSource
-import com.seirion.worlddodook.data.PriceInfo
+import com.seirion.world.data.DataSource
+import com.seirion.world.data.PriceInfo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.customView
@@ -26,12 +26,11 @@ import org.jetbrains.anko.singleLine
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.yesButton
 import com.jakewharton.rxbinding.view.RxView
-import com.seirion.worlddodook.activity.SettingActivity
-import com.seirion.worlddodook.activity.StockInfoActivity
-import com.seirion.worlddodook.data.Settings
-import com.seirion.worlddodook.ui.WorldViewPager
+import com.seirion.world.activity.SettingActivity
+import com.seirion.world.activity.StockInfoActivity
+import com.seirion.world.data.Settings
+import com.seirion.world.ui.WorldViewPager
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import java.util.Calendar

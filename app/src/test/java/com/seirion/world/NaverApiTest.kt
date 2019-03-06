@@ -1,6 +1,6 @@
-package com.seirion.worlddodook
+package com.seirion.world
 
-import com.seirion.worlddodook.data.StockCode
+import com.seirion.world.data.StockCode
 import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test

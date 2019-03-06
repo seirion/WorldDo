@@ -1,9 +1,9 @@
-package com.seirion.worlddodook.data
+package com.seirion.world.data
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import com.seirion.worlddodook.getPriceInfo
+import com.seirion.world.getPriceInfo
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers

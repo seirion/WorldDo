@@ -1,4 +1,4 @@
-package com.seirion.worlddodook.data
+package com.seirion.world.data
 
 import android.annotation.SuppressLint
 import android.content.Context

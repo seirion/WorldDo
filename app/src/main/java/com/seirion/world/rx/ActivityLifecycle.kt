@@ -1,4 +1,4 @@
-package com.seirion.worlddodook.rx
+package com.seirion.world.rx
 
 enum class ActivityLifecycle {
     CREATE,

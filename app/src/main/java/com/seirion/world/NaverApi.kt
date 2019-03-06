@@ -1,12 +1,12 @@
-package com.seirion.worlddodook
+package com.seirion.world
 
 import android.util.Log
-import com.seirion.worlddodook.data.NaverRealTimeResponse
-import com.seirion.worlddodook.data.PriceInfo
-import com.seirion.worlddodook.data.StockCode
-import com.seirion.worlddodook.data.StockCodeQueryDataAdapter
-import com.seirion.worlddodook.data.StockCodeQueryResponse
-import com.seirion.worlddodook.data.jsonAdapter
+import com.seirion.world.data.NaverRealTimeResponse
+import com.seirion.world.data.PriceInfo
+import com.seirion.world.data.StockCode
+import com.seirion.world.data.StockCodeQueryDataAdapter
+import com.seirion.world.data.StockCodeQueryResponse
+import com.seirion.world.data.jsonAdapter
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.Moshi

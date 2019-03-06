@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.seirion.worlddodook">
+    package="com.seirion.world">
 
     <application
         android:allowBackup="true"
@@ -20,8 +20,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.SettingActivity" />
-        <activity android:name=".activity.StockInfoActivity"
+        <activity android:name="com.seirion.world.activity.SettingActivity" />
+        <activity android:name="com.seirion.world.activity.StockInfoActivity"
             android:theme="@style/Theme.Transparent" />
 
     </application>

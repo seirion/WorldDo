@@ -6,13 +6,13 @@ apply plugin: 'kotlin-kapt'
 apply from: 'version.gradle'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         versionCode getVersionCode()
         versionName getVersionName()
-        applicationId "com.seirion.worlddodook"
+        applicationId "com.seirion.world"
         minSdkVersion 22
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

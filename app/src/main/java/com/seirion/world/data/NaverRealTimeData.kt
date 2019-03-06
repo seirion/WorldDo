@@ -1,4 +1,4 @@
-package com.seirion.worlddodook.data
+package com.seirion.world.data
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Json

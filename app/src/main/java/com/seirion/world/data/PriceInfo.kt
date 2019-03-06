@@ -1,3 +1,3 @@
-package com.seirion.worlddodook.data
+package com.seirion.world.data
 
 typealias PriceInfo = NaverRealTimeData

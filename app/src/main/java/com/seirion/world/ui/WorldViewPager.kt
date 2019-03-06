@@ -1,4 +1,4 @@
-package com.seirion.worlddodook.ui
+package com.seirion.world.ui
 
 import android.content.Context
 import android.support.v4.view.ViewPager
