@@ -10,7 +10,7 @@ android {
     defaultConfig {
         versionCode getVersionCode()
         versionName getVersionName()
-        applicationId "com.seirion.world"
+        applicationId "com.trueedu.world"
         minSdkVersion 22
         targetSdkVersion 28
         versionCode 1

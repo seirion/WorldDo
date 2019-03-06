@@ -1,4 +1,4 @@
-package com.seirion.world.data
+package com.trueedu.world.data
 
 import android.annotation.SuppressLint
 import android.content.Context

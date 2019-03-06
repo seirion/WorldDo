@@ -1,3 +1,3 @@
-package com.seirion.world.data
+package com.trueedu.world.data
 
 typealias PriceInfo = NaverRealTimeData

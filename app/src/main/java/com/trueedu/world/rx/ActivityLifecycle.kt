@@ -1,4 +1,4 @@
-package com.seirion.world.rx
+package com.trueedu.world.rx
 
 enum class ActivityLifecycle {
     CREATE,

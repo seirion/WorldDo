@@ -1,4 +1,4 @@
-package com.seirion.world.activity
+package com.trueedu.world.activity
 
 import android.content.Context
 import android.content.Intent
@@ -8,8 +8,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.EditText
-import com.seirion.world.R
-import com.seirion.world.data.Settings
+import com.trueedu.world.R
+import com.trueedu.world.data.Settings
 
 
 class SettingActivity : AppCompatActivity() {

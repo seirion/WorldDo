@@ -1,4 +1,4 @@
-package com.seirion.world
+package com.trueedu.world
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -15,8 +15,8 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
-import com.seirion.world.data.DataSource
-import com.seirion.world.data.PriceInfo
+import com.trueedu.world.data.DataSource
+import com.trueedu.world.data.PriceInfo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.customView
@@ -26,10 +26,10 @@ import org.jetbrains.anko.singleLine
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.yesButton
 import com.jakewharton.rxbinding.view.RxView
-import com.seirion.world.activity.SettingActivity
-import com.seirion.world.activity.StockInfoActivity
-import com.seirion.world.data.Settings
-import com.seirion.world.ui.WorldViewPager
+import com.trueedu.world.activity.SettingActivity
+import com.trueedu.world.activity.StockInfoActivity
+import com.trueedu.world.data.Settings
+import com.trueedu.world.ui.WorldViewPager
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit

@@ -1,4 +1,4 @@
-package com.seirion.world.data
+package com.trueedu.world.data
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Json

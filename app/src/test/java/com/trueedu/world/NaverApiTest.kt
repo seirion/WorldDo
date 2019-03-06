@@ -1,6 +1,6 @@
-package com.seirion.world
+package com.trueedu.world
 
-import com.seirion.world.data.StockCode
+import com.trueedu.world.data.StockCode
 import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test

@@ -1,4 +1,4 @@
-package com.seirion.world.activity
+package com.trueedu.world.activity
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,9 +8,9 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.TextView
-import com.seirion.world.R
-import com.seirion.world.data.DataSource
-import com.seirion.world.data.PriceInfo
+import com.trueedu.world.R
+import com.trueedu.world.data.DataSource
+import com.trueedu.world.data.PriceInfo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import java.text.SimpleDateFormat

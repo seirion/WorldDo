@@ -1,4 +1,4 @@
-package com.seirion.world.rx
+package com.trueedu.world.rx
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity

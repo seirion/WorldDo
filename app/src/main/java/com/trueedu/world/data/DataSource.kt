@@ -1,9 +1,9 @@
-package com.seirion.world.data
+package com.trueedu.world.data
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import com.seirion.world.getPriceInfo
+import com.trueedu.world.getPriceInfo
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers

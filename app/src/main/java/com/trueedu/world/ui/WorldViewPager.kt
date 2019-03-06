@@ -1,4 +1,4 @@
-package com.seirion.world.ui
+package com.trueedu.world.ui
 
 import android.content.Context
 import android.support.v4.view.ViewPager

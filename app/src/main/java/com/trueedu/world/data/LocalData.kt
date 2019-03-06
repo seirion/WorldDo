@@ -1,4 +1,4 @@
-package com.seirion.world.data
+package com.trueedu.world.data
 
 import android.content.Context
 import android.util.Log
