@@ -25,7 +25,7 @@ import org.jetbrains.anko.selector
 import org.jetbrains.anko.singleLine
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.yesButton
-import com.jakewharton.rxbinding.view.RxView
+import com.jakewharton.rxbinding3.view.clicks
 import com.trueedu.world.activity.SettingActivity
 import com.trueedu.world.activity.StockInfoActivity
 import com.trueedu.world.data.Settings
@@ -154,13 +154,14 @@ class MainActivity : AppCompatActivity() {
             return view === `object`
         }
 
+        @SuppressLint("CheckResult")
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
             val view: View
             if (position == codeNum) {
                 view = inflater.inflate(R.layout.item_page_about, container, false)
                 view.findViewById<TextView>(R.id.version).text = BuildConfig.VERSION_NAME
                 val setting = view.findViewById<View>(R.id.settings)
-                RxView.clicks(setting).throttleFirst(2, TimeUnit.SECONDS)
+                setting.clicks().throttleFirst(2, TimeUnit.SECONDS)
                         .subscribe { SettingActivity.start(activity) }
             } else {
                 view = inflater.inflate(R.layout.item_page_card, container, false)
@@ -181,7 +182,7 @@ class MainActivity : AppCompatActivity() {
                     false
                 }
 
-                RxView.clicks(root).subscribe {
+                root.clicks().subscribe {
                     val now = SystemClock.elapsedRealtime()
                     if (now - prev <= DOUBLE_CLICK_THRESHOLD_MS) {
                         Log.d(TAG, "double click")

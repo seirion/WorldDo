@@ -2,8 +2,8 @@ package com.trueedu.world.data
 
 import android.annotation.SuppressLint
 import android.content.Context
-import rx.subjects.BehaviorSubject
-import rx.Observable
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 
 @SuppressLint("StaticFieldLeak")
 object Settings {
