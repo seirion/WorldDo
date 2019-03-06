@@ -42,7 +42,7 @@ object Settings {
             }
         }
 
-    var currentPage = 1 // 1-based index
+    var currentPage = 0
         set(value) {
             if (field != value) {
                 field = value
