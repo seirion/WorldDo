@@ -45,7 +45,9 @@ class MainActivity : RxAppCompatActivity() {
         private const val DOUBLE_CLICK_THRESHOLD_MS = 500L
     }
 
-    private lateinit var adapter: Adapter
+    private val adapter by lazy {
+        Adapter(this, Settings.codeNum) { this.openInputDialog() }
+    }
 
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +56,6 @@ class MainActivity : RxAppCompatActivity() {
         setContentView(R.layout.activity_main)
         Settings.init(applicationContext)
 
-        adapter = Adapter(this, Settings.codeNum) { this.openInputDialog() }
         viewPager.adapter = adapter
         viewPager.currentItem = Settings.currentPage
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
