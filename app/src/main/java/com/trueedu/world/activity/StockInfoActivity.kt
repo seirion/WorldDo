@@ -4,24 +4,23 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import com.trueedu.world.R
 import com.trueedu.world.data.DataSource
 import com.trueedu.world.data.PriceInfo
+import com.trueedu.world.rx.ActivityLifecycle
+import com.trueedu.world.rx.RxAppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 
-class StockInfoActivity : AppCompatActivity() {
+class StockInfoActivity : RxAppCompatActivity() {
 
-    private lateinit var disposable: Disposable
-
+    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stock_info)
@@ -29,14 +28,10 @@ class StockInfoActivity : AppCompatActivity() {
         setFinishOnTouchOutside(true)
         findViewById<View>(R.id.outside).setOnClickListener { finish() }
 
-        disposable = DataSource.observeChanges()
+        DataSource.observeChanges()
+                .takeUntil(getLifecycleSignal(ActivityLifecycle.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { updateUi(it) }
-    }
-
-    override fun onDestroy() {
-        disposable.dispose()
-        super.onDestroy()
     }
 
     @SuppressLint("SetTextI18n")
