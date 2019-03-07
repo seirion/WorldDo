@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="start|center_vertical"
+            android:lineSpacingExtra="-4dp"
             android:textColor="#999999"
             android:textSize="14sp"
             tools:text="Test (001100)" />
