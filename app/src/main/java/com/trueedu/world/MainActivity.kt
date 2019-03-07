@@ -30,9 +30,9 @@ import com.trueedu.world.activity.StockInfoActivity
 import com.trueedu.world.data.Settings
 import com.trueedu.world.rx.ActivityLifecycle
 import com.trueedu.world.rx.RxAppCompatActivity
-import com.trueedu.world.ui.WorldViewPager
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.TimeUnit
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -45,7 +45,6 @@ class MainActivity : RxAppCompatActivity() {
         private const val DOUBLE_CLICK_THRESHOLD_MS = 500L
     }
 
-    private lateinit var viewPager: WorldViewPager
     private lateinit var adapter: Adapter
 
     @SuppressLint("CheckResult")
@@ -55,7 +54,6 @@ class MainActivity : RxAppCompatActivity() {
         setContentView(R.layout.activity_main)
         Settings.init(applicationContext)
 
-        viewPager = findViewById(R.id.viewPager)
         adapter = Adapter(this, Settings.codeNum) { this.openInputDialog() }
         viewPager.adapter = adapter
         viewPager.currentItem = Settings.currentPage
