@@ -8,13 +8,11 @@ apply from: 'version.gradle'
 android {
     compileSdkVersion 28
     defaultConfig {
-        versionCode getVersionCode()
-        versionName getVersionName()
         applicationId "com.trueedu.world"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode getWorldVersionCode()
+        versionName getWorldVersionName()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
