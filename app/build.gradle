@@ -6,6 +6,14 @@ apply plugin: 'kotlin-kapt'
 apply from: 'version.gradle'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'babo2019'
+            keyPassword 'zkffldna1!'
+            storeFile file('/Users/babo/keystore/babo_keystore_2019')
+            storePassword 'zkffldna1!'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         versionCode getVersionCode()
@@ -24,6 +32,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
     buildToolsVersion '28.0.3'
