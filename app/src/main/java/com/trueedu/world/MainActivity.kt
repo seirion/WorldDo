@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -29,6 +28,8 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.trueedu.world.activity.SettingActivity
 import com.trueedu.world.activity.StockInfoActivity
 import com.trueedu.world.data.Settings
+import com.trueedu.world.rx.ActivityLifecycle
+import com.trueedu.world.rx.RxAppCompatActivity
 import com.trueedu.world.ui.WorldViewPager
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -38,9 +39,10 @@ import java.util.GregorianCalendar
 import java.util.Locale
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : RxAppCompatActivity() {
     companion object {
         private const val TAG = "MainActivity"
+        private const val DOUBLE_CLICK_THRESHOLD_MS = 500L
     }
 
     private lateinit var viewPager: WorldViewPager
@@ -73,10 +75,12 @@ class MainActivity : AppCompatActivity() {
 
         DataSource.init(this)
         DataSource.observeChanges()
+                .takeUntil(getLifecycleSignal(ActivityLifecycle.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { adapter.updateUi(viewPager.currentItem, it) }
 
         Settings.observeSettingChanges()
+                .takeUntil(getLifecycleSignal(ActivityLifecycle.DESTROY))
                 .subscribe {
                     adapter.codeNum = it
                     adapter.notifyDataSetChanged()
@@ -136,19 +140,14 @@ class MainActivity : AppCompatActivity() {
                 })
     }
 
-    private class Adapter(val activity: Activity, var codeNum: Int, val listener: () -> Unit) : PagerAdapter() {
-        companion object {
-            private const val DOUBLE_CLICK_THRESHOLD_MS = 500L
-        }
+    private inner class Adapter(val activity: Activity, var codeNum: Int, val listener: () -> Unit) : PagerAdapter() {
 
         private val inflater: LayoutInflater = LayoutInflater.from(activity.applicationContext)
         private val views = ArrayList<View>(Settings.MAX_CODE_NUM)
         private var prev = 0L // for checking double click
         private var start: Float = 0f // for checking finish condition
 
-        override fun getCount(): Int {
-            return 1 + codeNum // 1 is for settings
-        }
+        override fun getCount() = codeNum + 1 // 1 is for settings
 
         override fun isViewFromObject(view: View, `object`: Any): Boolean {
             return view === `object`
@@ -162,13 +161,14 @@ class MainActivity : AppCompatActivity() {
                 view.findViewById<TextView>(R.id.version).text = BuildConfig.VERSION_NAME
                 val setting = view.findViewById<View>(R.id.settings)
                 setting.clicks().throttleFirst(2, TimeUnit.SECONDS)
+                        .takeUntil(getLifecycleSignal(ActivityLifecycle.DESTROY))
                         .subscribe { SettingActivity.start(activity) }
             } else {
                 view = inflater.inflate(R.layout.item_page_card, container, false)
                 val root = view.findViewById<View>(R.id.root)
                 root.setOnLongClickListener {
                     listener()
-                    return@setOnLongClickListener true
+                    true
                 }
                 root.setOnTouchListener { _, event ->
                     when (event.action) {
@@ -182,14 +182,16 @@ class MainActivity : AppCompatActivity() {
                     false
                 }
 
-                root.clicks().subscribe {
-                    val now = SystemClock.elapsedRealtime()
-                    if (now - prev <= DOUBLE_CLICK_THRESHOLD_MS) {
-                        Log.d(TAG, "double click")
-                        showInformation(position)
-                    }
-                    prev = now
-                }
+                root.clicks()
+                        .takeUntil(getLifecycleSignal(ActivityLifecycle.DESTROY))
+                        .subscribe {
+                            val now = SystemClock.elapsedRealtime()
+                            if (now - prev <= DOUBLE_CLICK_THRESHOLD_MS) {
+                                Log.d(TAG, "double click")
+                                showInformation(position)
+                            }
+                            prev = now
+                        }
                 if (position < views.size) {
                     views[position] = view
                 } else {
