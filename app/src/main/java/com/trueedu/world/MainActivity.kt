@@ -152,12 +152,12 @@ class MainActivity : RxAppCompatActivity() {
             return view === `object`
         }
 
-        @SuppressLint("CheckResult")
+        @SuppressLint("CheckResult", "SetTextI18n")
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
             val view: View
             if (position == codeNum) {
                 view = inflater.inflate(R.layout.item_page_about, container, false)
-                view.findViewById<TextView>(R.id.version).text = BuildConfig.VERSION_NAME
+                view.findViewById<TextView>(R.id.version).text = "v${BuildConfig.VERSION_NAME}"
                 val setting = view.findViewById<View>(R.id.settings)
                 setting.clicks().throttleFirst(2, TimeUnit.SECONDS)
                         .takeUntil(getLifecycleSignal(ActivityLifecycle.DESTROY))
