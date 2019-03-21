@@ -34,10 +34,11 @@ class SettingActivity : RxAppCompatActivity() {
 
         codeNum.textChangeEvents()
                 .takeUntil(getLifecycleSignal(ActivityLifecycle.DESTROY))
-                .map { it.toString().toInt() }
+                .filter { !it.text.isNullOrBlank() }
+                .map { it.text.toString().toInt() }
                 .map { maxOf(it, Settings.MIN_CODE_NUM) }
                 .map { minOf(it, Settings.MAX_CODE_NUM) }
-                .subscribe { Settings.codeNum = it }
+                .subscribe({ Settings.codeNum = it }, { /* ignore errors */ })
 
         coolTime = findViewById(R.id.cool_time)
         coolTime.setText(Settings.coolTimeSec.toString())
