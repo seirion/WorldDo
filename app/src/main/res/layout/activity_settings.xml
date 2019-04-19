@@ -9,9 +9,19 @@
     android:orientation="vertical"
     tools:context=".activity.SettingActivity">
 
+    <ImageView
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:src="@drawable/arrow_back_white"
+        android:text="@string/code_num"
+        tools:ignore="RtlSymmetry" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal" >
 
         <TextView
@@ -24,7 +34,7 @@
 
         <EditText
             style="@style/SettingText"
-            android:id="@+id/code_num"
+            android:id="@+id/codeNum"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:inputType="number"
@@ -49,7 +59,7 @@
 
         <EditText
             style="@style/SettingText"
-            android:id="@+id/cool_time"
+            android:id="@+id/coolTime"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:inputType="number"

@@ -12,19 +12,16 @@ import com.trueedu.world.R
 import com.trueedu.world.data.Settings
 import com.trueedu.world.rx.ActivityLifecycle
 import com.trueedu.world.rx.RxAppCompatActivity
+import kotlinx.android.synthetic.main.activity_settings.*
 
 
 class SettingActivity : RxAppCompatActivity() {
-
-    private lateinit var codeNum: EditText
-    private lateinit var coolTime: EditText
 
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        codeNum = findViewById(R.id.code_num)
         codeNum.setText(Settings.codeNum.toString())
         codeNum.focusChanges()
                 .takeUntil(getLifecycleSignal(ActivityLifecycle.DESTROY))
@@ -40,7 +37,6 @@ class SettingActivity : RxAppCompatActivity() {
                 .map { minOf(it, Settings.MAX_CODE_NUM) }
                 .subscribe({ Settings.codeNum = it }, { /* ignore errors */ })
 
-        coolTime = findViewById(R.id.cool_time)
         coolTime.setText(Settings.coolTimeSec.toString())
         coolTime.focusChanges()
                 .takeUntil(getLifecycleSignal(ActivityLifecycle.DESTROY))
@@ -55,6 +51,8 @@ class SettingActivity : RxAppCompatActivity() {
                 .map { minOf(it, Settings.MAX_COOL_TIME_SEC) }
                 .distinctUntilChanged()
                 .subscribe({ Settings.coolTimeSec = it }, { /* ignore errors */ })
+
+        backButton.setOnClickListener { finish() }
     }
 
     companion object {
